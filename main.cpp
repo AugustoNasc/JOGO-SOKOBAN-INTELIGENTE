@@ -2,6 +2,7 @@
 #include <SFML/Audio.hpp>
 #include "mapa.hpp"
 #include <string>
+#include <string.h>
 #include <iostream>
 #include "movimentos.hpp"
 #include "voltajogada.hpp"
@@ -20,14 +21,79 @@
                     }\
                 }
 
+#define TELA_TITULO\
+    sf::Font font;\
+    if (!font.loadFromFile("assets/arial_narrow_7.ttf"))\
+    {\
+        std::cout<<"tristefim"<<std::endl;\
+    }\
+    \
+    sf::Text text;\
+    text.setFont(font);\
+    text.setCharacterSize(36);\
+    text.setFillColor(sf::Color::White);\
+    \
+    /* Desenhar "SOKOBAN"*/\
+    text.setString("SOKOBAN");\
+    text.setPosition(250, 125);\
+    window.draw(text);\
+    \
+    text.setString("GASPARZINHO");\
+    text.setPosition(190, 170);\
+    text.setCharacterSize(50);\
+    window.draw(text);\
+\
+    sf::RectangleShape button;\
+    button.setSize(sf::Vector2f(260, 40));\
+    button.setFillColor(sf::Color(211,211,211)); \
+    \
+    \
+    button.setPosition(170, 300);\
+    window.draw(button);\
+    text.setString("JOGAR [ENTER]");\
+    text.setPosition(240, 312);\
+    text.setCharacterSize(20);\
+    text.setFillColor(sf::Color::Black);\
+    window.draw(text);\
+    \
+    \
+    button.setPosition(170, 360);\
+    window.draw(button);\
+    text.setString("INSTRUCOES [I]");\
+    text.setPosition(240, 372);\
+    window.draw(text);\
+    \
+    \
+    button.setPosition(170, 420);\
+    window.draw(button);\
+    text.setString("CREDITOS [C]");\
+    text.setPosition(240, 432);\
+    window.draw(text);\
+    \
+    \
+    button.setPosition(170, 480);\
+    window.draw(button);\
+    text.setString("ESCOLHER NIVEL [H]");\
+    text.setPosition(220, 492);\
+    window.draw(text);\
+    \
+    \
+    text.setString("Para sair do jogo pressione ESC");\
+    text.setPosition(161, 550);\
+    text.setFillColor(sf::Color::White);\
+    window.draw(text);\
+
+
 int gX, gY;
 
 typedef enum GameScreen { TITLE = 0, MENU, MANUAL1, MANUAL2, ESCOLHER_NIVEL, CREDITO, GAMEPLAY, PARABENS } GameScreen;
 
 MAPA mapa;
 
+
 int main()
 {
+    FILE *arquivo;
     sf::RenderWindow window(sf::VideoMode(LARGURA, LARGURA), "Gasparzinho");
     GameScreen currentScreen = TITLE;
 
@@ -61,7 +127,17 @@ int main()
 
     sf::Sprite backgroundSprite;
     backgroundSprite.setTexture(backgroundTexture);
-    
+
+    char endereco[50];
+    sprintf(endereco, "mapastxt/mapa%d.txt", level);
+    arquivo = fopen(endereco, "rt");
+    fread(mapa.mapa, sizeof(char), 12*13, arquivo);
+    mapa_especial(&mapa);
+    POSICAO;
+
+    mapa_declararpng(&imagens);
+    mapa_fundo(&fundo);
+
     int voltando=0;
     while (window.isOpen()) {
         sf::Event event;
@@ -71,7 +147,6 @@ int main()
         }
 
         window.clear();
-
         switch (currentScreen) {
             case TITLE: {
 
@@ -87,25 +162,26 @@ int main()
                 for(int i=0; i<4; i++){
                     botaoNivel[i].setPosition(200, 300 + 60 * i);
                     botaoNivel[i].setSize(sf::Vector2f(200, 50));
+                    botaoNivel[i].setFillColor(sf::Color(sf::Color(255,255,255,0)));
                 }
 
-                while (window.isOpen())
-                {
-                    sf::Event event;
-                    while (window.pollEvent(event))
-                    {
-                        if (event.type == sf::Event::Closed)
-                            window.close();
-                    }
+                //while (window.isOpen())
+                //{
+                    //sf::Event event;
+                    //while (window.pollEvent(event))
+                    //{
+                       // if (event.type == sf::Event::Closed)
+                     //       window.close();
+                    //}
 
                     sf::Vector2i posicaoMouse = sf::Mouse::getPosition(window);
                     double p = window.getSize().x / 600.0;
                     sf::Vector2f scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
                     mouse.setPosition(scaledMousePosition);
 
-                    window.clear();
                     window.draw(background);
 
+                TELA_TITULO;
                     for(int i=0; i<4; i++){
                         if(mouse.getGlobalBounds().intersects(botaoNivel[i].getGlobalBounds())){
                             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
@@ -124,8 +200,9 @@ int main()
 
                     window.draw(mouse);
                     window.display();
-                }
+                //}
             }
+            
             break;
 
             case MENU: {
@@ -396,6 +473,7 @@ int main()
 
             case GAMEPLAY:{
 
+                window.clear();
             // Obter a posição do mouse
             sf::Vector2i posicaoMouse = sf::Mouse::getPosition(window);
 
@@ -415,101 +493,103 @@ int main()
                 }
             }
 
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)||sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){ 
-                    flag=1; 
-                    voltando=0;
-                    movimentos_move(&gX, &gY, flag, &mapa, level);
-                }
+            if(event.type == sf::Event::KeyPressed){
 
-                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)||sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){ 
-                    flag=2;
-                    voltando=0;
-                    movimentos_move(&gX, &gY, flag, &mapa, level);
-                }
+                if((event.key.code==sf::Keyboard::A)||(event.key.code==sf::Keyboard::Left)){ 
+                        flag=1; 
+                        voltando=0;
+                        movimentos_move(&gX, &gY, flag, &mapa, level);
+                    }
 
-                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)||sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){ 
-                    flag=3;
-                    voltando=0;
-                    movimentos_move(&gX, &gY, flag, &mapa, level);
-                }
+                    else if((event.key.code==sf::Keyboard::D)||(event.key.code==sf::Keyboard::Right)){ 
+                        flag=2;
+                        voltando=0;
+                        movimentos_move(&gX, &gY, flag, &mapa, level);
+                    }
 
-                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)||sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){ 
-                    flag=4; 
-                    voltando=0;
-                    movimentos_move(&gX, &gY, flag, &mapa, level);
-                }
+                    else if((event.key.code==sf::Keyboard::S)||(event.key.code==sf::Keyboard::Down)){ 
+                        flag=3;
+                        voltando=0;
+                        movimentos_move(&gX, &gY, flag, &mapa, level);
+                    }
 
-                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z)){ 
-                    voltando_jogada(&mapa, level, voltando);
-                    voltando++;
-                    //mapa.especial_atual[1][3]=1;
-                    flag=0;
-                    POSICAO;
-                }
+                    else if((event.key.code==sf::Keyboard::W)||(event.key.code==sf::Keyboard::Up)){ 
+                        flag=4; 
+                        voltando=0;
+                        movimentos_move(&gX, &gY, flag, &mapa, level);
+                    }
 
-                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)){ 
-                    if(voltando!=0){
-                        adiantando_jogada(&mapa, level, voltando);
-                        voltando--;
+                    else if((event.key.code==sf::Keyboard::Z)){ 
+                        voltando_jogada(&mapa, level, voltando);
+                        voltando++;
+                        //mapa.especial_atual[1][3]=1;
                         flag=0;
                         POSICAO;
                     }
-                }
-                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::X)){ 
 
-                    mapa = mapa_rezetar(level);
+                    else if((event.key.code==sf::Keyboard::C)){ 
+                        if(voltando!=0){
+                            adiantando_jogada(&mapa, level, voltando);
+                            voltando--;
+                            flag=0;
+                            POSICAO;
+                        }
+                    }
+                    else if((event.key.code==sf::Keyboard::X)){ 
 
-                    mapa_especial(&mapa);
+                        mapa = mapa_rezetar(level);
 
-                    jogando.stop();
+                        mapa_especial(&mapa);
 
-                    POSICAO;
-                    flag=0;
+                        jogando.stop();
 
-                    jogando.play();
-                }
-                //provisorio, so para admins
-                /*else if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)&&level!=13){ 
-                    apagar_jogadas(level);
-                    level++;
+                        POSICAO;
+                        flag=0;
 
-                    sprintf(endereco, "mapastxt/mapa%d.txt", level);
+                        jogando.play();
+                    }
+                    //provisorio, so para admins
+                    /*else if((event.key.code==sf::Keyboard::P)&&level!=13){ 
+                        apagar_jogadas(level);
+                        level++;
 
-                    arquivo = fopen(endereco, "rt");
+                        sprintf(endereco, "mapastxt/mapa%d.txt", level);
 
-                    fread(mapa.mapa, sizeof(char), 12*13, arquivo);
+                        arquivo = fopen(endereco, "rt");
 
-                    mapa_especial(&mapa);
+                        fread(mapa.mapa, sizeof(char), 12*13, arquivo);
 
-                    StopMusicStream(jogando);
+                        mapa_especial(&mapa);
 
-                    POSICAO;
-                    flag=0;
+                        StopMusicStream(jogando);
 
-                    PlayMusicStream(jogando);
-                }
+                        POSICAO;
+                        flag=0;
 
-                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::O)&&level!=1){ 
-                    apagar_jogadas(level);
-                    level--;
+                        PlayMusicStream(jogando);
+                    }
 
-                    sprintf(endereco, "mapastxt/mapa%d.txt", level);
+                    else if((event.key.code==sf::Keyboard::O)&&level!=1){ 
+                        apagar_jogadas(level);
+                        level--;
 
-                    arquivo = fopen(endereco, "rt");
+                        sprintf(endereco, "mapastxt/mapa%d.txt", level);
 
-                    fread(mapa.mapa, sizeof(char), 12*13, arquivo);
+                        arquivo = fopen(endereco, "rt");
 
-                    mapa_especial(&mapa);
+                        fread(mapa.mapa, sizeof(char), 12*13, arquivo);
 
-                    StopMusicStream(jogando);
+                        mapa_especial(&mapa);
 
-                    POSICAO;
-                    flag=0;
+                        StopMusicStream(jogando);
 
-                    PlayMusicStream(jogando);
-                }*/
+                        POSICAO;
+                        flag=0;
 
+                        PlayMusicStream(jogando);
+                    }*/
 
+                    }
             }
             break;
 
@@ -566,8 +646,11 @@ int main()
             default:
             break;
         }
+        //window.display();
+        //window.clear(sf::Color::White);
 
-        window.display();
+            window.display();
+        
     }
 
 
