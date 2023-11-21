@@ -50,8 +50,8 @@
     \
     button.setPosition(170, 300);\
     window.draw(button);\
-    text.setString("JOGAR [ENTER]");\
-    text.setPosition(240, 312);\
+    text.setString("JOGAR");\
+    text.setPosition(270, 312);\
     text.setCharacterSize(20);\
     text.setFillColor(sf::Color::Black);\
     window.draw(text);\
@@ -59,22 +59,22 @@
     \
     button.setPosition(170, 360);\
     window.draw(button);\
-    text.setString("INSTRUCOES [I]");\
-    text.setPosition(240, 372);\
+    text.setString("INSTRUCOES");\
+    text.setPosition(260, 372);\
     window.draw(text);\
     \
     \
     button.setPosition(170, 420);\
     window.draw(button);\
-    text.setString("CREDITOS [C]");\
-    text.setPosition(240, 432);\
+    text.setString("CREDITOS");\
+    text.setPosition(270, 432);\
     window.draw(text);\
     \
     \
     button.setPosition(170, 480);\
     window.draw(button);\
-    text.setString("ESCOLHER NIVEL [H]");\
-    text.setPosition(220, 492);\
+    text.setString("ESCOLHER NIVEL");\
+    text.setPosition(235, 492);\
     window.draw(text);\
     \
     \
@@ -82,6 +82,74 @@
     text.setPosition(161, 550);\
     text.setFillColor(sf::Color::White);\
     window.draw(text);\
+
+#define TELA_MENU1\
+    sf::RectangleShape button;\
+    button.setSize(sf::Vector2f(220, 40));\
+    button.setFillColor(sf::Color(211,211,211));\
+\
+    sf::Font font;\
+    if (!font.loadFromFile("assets/arial_narrow_7.ttf"))\
+    {\
+    }\
+\
+    sf::Text text;\
+    text.setFont(font);\
+    text.setCharacterSize(25);\
+    text.setFillColor(sf::Color::Black);\
+\
+    button.setPosition(190, 90);\
+    window.draw(button);\
+    text.setString("COMO JOGAR:");\
+    text.setPosition(222, 100);\
+    window.draw(text);\
+\
+    text.setCharacterSize(20);\
+    text.setFillColor(sf::Color::White);\
+    text.setString("[W] - CIMA");\
+    text.setPosition(248, 160);\
+    window.draw(text);\
+\
+    text.setString("[A] - ESQUERDA");\
+    text.setPosition(225, 195);\
+    window.draw(text);\
+\
+    text.setString("[S] - BAIXO");\
+    text.setPosition(245, 230);\
+    window.draw(text);\
+\
+    text.setString("[D] - DIREITA");\
+    text.setPosition(230, 265);\
+    window.draw(text);\
+\
+    text.setString("[M] - MENU");\
+    text.setPosition(246, 300);\
+    window.draw(text);\
+\
+    text.setString("[Z] - VOLTAR JOGADA");\
+    text.setPosition(190, 335);\
+    window.draw(text);\
+\
+    text.setString("[C] - DESFAZER VOLTA DE JOGADA");\
+    text.setPosition(115, 370);\
+    window.draw(text);\
+\
+    text.setString("[X] - RESETAR NÍVEL");\
+    text.setPosition(195, 405);\
+    window.draw(text);\
+\
+    button.setPosition(205, 492);\
+    button.setSize(sf::Vector2f(190, 35));\
+    window.draw(button);\
+    text.setString("VOLTAR");\
+    text.setPosition(245, 500);\
+    text.setFillColor(sf::Color::Black);\
+    window.draw(text);\
+\
+    text.setString("Para sair do jogo pressione ESC");\
+    text.setPosition(161, 550);\
+    text.setFillColor(sf::Color::White);\
+    window.draw(text);
 
 
 int gX, gY;
@@ -139,6 +207,7 @@ int main()
     mapa_fundo(&fundo);
 
     int voltando=0;
+    window.setFramerateLimit(144);
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -162,7 +231,7 @@ int main()
                 for(int i=0; i<4; i++){
                     botaoNivel[i].setPosition(200, 300 + 60 * i);
                     botaoNivel[i].setSize(sf::Vector2f(200, 50));
-                    botaoNivel[i].setFillColor(sf::Color(sf::Color(255,255,255,0)));
+                    botaoNivel[i].setFillColor(sf::Color::Transparent);
                 }
 
                 //while (window.isOpen())
@@ -207,7 +276,7 @@ int main()
 
             case MENU: {
                 sf::Texture backgroundTexture;
-                if (!backgroundTexture.loadFromFile("background.png"))
+                if (!backgroundTexture.loadFromFile("assets/fundo.png"))
                 {
                     // erro...
                 }
@@ -278,87 +347,77 @@ int main()
             break;
 
             case MANUAL1: {
-                sf::Texture texture;
-                if (!texture.loadFromFile("background.png"))
-                {
-                    // erro...
-                }
-                sf::Sprite sprite(texture);
-                sf::Vector2i position = sf::Mouse::getPosition(window);
-                sf::FloatRect buttonBounds(200, 500, 200, 60);
-                sf::FloatRect mouseBounds(position.x, position.y, 15, 15);
+                sf::Texture backgroundTexture;
+                if (!backgroundTexture.loadFromFile("assets/fundo.png"))
+                    return EXIT_FAILURE;
 
-                if (buttonBounds.intersects(mouseBounds))
-                {
-                    // Ação quando o mouse está sobre o botão
-                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                    {
+                sf::Sprite background(backgroundTexture);
+
+                sf::Vector2i posicaoMouse = sf::Mouse::getPosition(window);
+                double p = window.getSize().x / 600.0;
+                sf::Vector2f scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
+                
+                sf::RectangleShape mouse(sf::Vector2f(15, 15));
+                mouse.setPosition(scaledMousePosition);
+
+                sf::RectangleShape buttonBounds;
+                buttonBounds.setPosition(200, 500);
+                buttonBounds.setSize(sf::Vector2f(200, 60));
+                buttonBounds.setFillColor(sf::Color::Transparent);
+
+                window.draw(background);
+                TELA_MENU1;
+
+                if (mouse.getGlobalBounds().intersects(buttonBounds.getGlobalBounds())) {
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                         currentScreen = TITLE;
                     }
                 }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-                {
-                    currentScreen = TITLE;
-                }
+                window.draw(buttonBounds);
+                window.draw(mouse);
+                window.display();
+
             }
 
             break;
 
             case MANUAL2:{
                 sf::Texture backgroundTexture;
-                if (!backgroundTexture.loadFromFile("background.png"))
-                {
-                    // erro...
-                }
+                if (!backgroundTexture.loadFromFile("assets/fundo.png"))
+                    return EXIT_FAILURE;
 
                 sf::Sprite background(backgroundTexture);
-                background.setScale((float)window.getSize().x / 600, (float)window.getSize().y / 600);
 
-                sf::Vector2i posicaoMouse = sf::Mouse::getPosition();
+                sf::Vector2i posicaoMouse = sf::Mouse::getPosition(window);
+                double p = window.getSize().x / 600.0;
+                sf::Vector2f scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
+                
                 sf::RectangleShape mouse(sf::Vector2f(15, 15));
-                mouse.setPosition((float)posicaoMouse.x, (float)posicaoMouse.y);
+                mouse.setPosition(scaledMousePosition);
 
-                sf::RectangleShape botaoNivel;
-                botaoNivel.setPosition(200, 500);
-                botaoNivel.setSize(sf::Vector2f(200, 60));
+                sf::RectangleShape buttonBounds;
+                buttonBounds.setPosition(200, 500);
+                buttonBounds.setSize(sf::Vector2f(200, 60));
+                buttonBounds.setFillColor(sf::Color::Transparent);
 
-                while (window.isOpen())
-                {
-                    sf::Event event;
-                    while (window.pollEvent(event))
-                    {
-                        if (event.type == sf::Event::Closed)
-                            window.close();
+                window.draw(background);
+                TELA_MENU1;
 
-                        if (event.type == sf::Event::MouseButtonReleased)
-                        {
-                            if(event.mouseButton.button == sf::Mouse::Left)
-                            {
-                                if(botaoNivel.getGlobalBounds().intersects(mouse.getGlobalBounds())){
-                                    currentScreen = MENU;
-                                }
-                            }
-                        }
-
-                        if (event.type == sf::Event::KeyPressed)
-                        {
-                            if (event.key.code == sf::Keyboard::Q)
-                            {
-                                currentScreen = MENU;
-                            }
-                        }
+                if (mouse.getGlobalBounds().intersects(buttonBounds.getGlobalBounds())) {
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                        currentScreen = MENU;
                     }
-
-                    window.clear();
-                    window.draw(background);
-                    window.display();
                 }
+                window.draw(buttonBounds);
+                window.draw(mouse);
+                window.display();
+
             }
             break;
 
             case CREDITO:{
                 sf::Texture backgroundTexture;
-                if (!backgroundTexture.loadFromFile("background.png"))
+                if (!backgroundTexture.loadFromFile("assets/fundo.png"))
                 {
                     // erro...
                 }
@@ -412,7 +471,7 @@ int main()
                 int maximo = guarda_ler_nivel();
 
                 sf::Texture texture;
-                if (!texture.loadFromFile("background.png"))
+                if (!texture.loadFromFile("assets/fundo.png"))
                 {
                     // erro...
                 }
