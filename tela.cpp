@@ -4,13 +4,13 @@
 #include <iostream>
 
 #define QTD_QUADRADOS 12 // Quantidade de quadrados na tela
-void atualiza_posicao_jogador(int gX, int gY, MAPA mapa){
-            for(int i=0; i<QTD_QUADRADOS; i++){\
+
+void atualiza_posicao_jogador(int& x, int& y, MAPA mapa){
+            for(int i=0; i<QTD_QUADRADOS; i++){
                     for(int j=0; j<QTD_QUADRADOS; j++){
                         if(mapa.mapa[i][j]=='P'){
-                            gY=i; gX=j;\
+                        y=i; x=j;
                         }
-
                     }
             }
 }
@@ -79,7 +79,6 @@ void tela_titulo(sf::RenderWindow &window){
 }
 
 void titulo(sf::RenderWindow &window, GameScreen &currentScreen, sf::Clock &clock){
-        std::cout<<"Tela titulo"<<std::endl;
         sf::Texture backgroundTexture;
         if (!backgroundTexture.loadFromFile("assets/fundo.png")){
             //erro...
@@ -115,7 +114,6 @@ void titulo(sf::RenderWindow &window, GameScreen &currentScreen, sf::Clock &cloc
                         if(i==3)
                             currentScreen = ESCOLHER_NIVEL;
 
-                        clock.restart();
 
                     }
                 }
@@ -222,9 +220,7 @@ void Manual(sf::RenderWindow &window, int i, GameScreen &currentScreen, sf::Cloc
                 if (mouse.getGlobalBounds().intersects(buttonBounds.getGlobalBounds())) {
                     sf::Time elapsed = clock.getElapsedTime();
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                        std::cout<<"Mouse clicado"<<std::endl;
                         if(i==1 && currentScreen == MANUAL1 && elapsed.asSeconds() >= 1.0f){
-                            std::cout<<"Mudando para tela titulo"<<std::endl;
                             currentScreen = TITLE;
                             clock.restart();
                         }
@@ -397,4 +393,27 @@ void Creditos(sf::RenderWindow &window, GameScreen &currentScreen, sf::Clock &cl
                 window.draw(botaoNivel);
                 window.draw(mouse);
                 window.display();
+}
+
+void legenda_gameplay(sf::RenderWindow &window, GameScreen &currentScreen, sf::Clock &clock){
+    sf::RectangleShape button;
+    button.setSize(sf::Vector2f(200, 60));
+    button.setFillColor(sf::Color(211,211,211));
+
+    sf::Font font;
+    if (!font.loadFromFile("assets/arial_narrow_7.ttf"))
+    {
+        //erro...
+    }
+
+    sf::Text text;
+    text.setFont(font);
+    text.setCharacterSize(25);
+    text.setFillColor(sf::Color::Black);
+
+    button.setPosition(200, 500);
+    window.draw(button);
+    text.setString("PAUSA");
+    text.setPosition(250, 510);
+    window.draw(text);
 }
