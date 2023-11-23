@@ -31,7 +31,7 @@ void declarar_posicoes_de_encaixe(MAPA *mapa) {
     }
 }
 
-int mapa_conseguiu(MAPA mapa) {
+bool finalizou_mapa(MAPA mapa) {
     int contador=0;
     for(int i=0; i<QTD_QUADRADOS; i++) {
         for(int k=0; k<QTD_QUADRADOS; k++) {
@@ -40,11 +40,10 @@ int mapa_conseguiu(MAPA mapa) {
             }
         }
     }
-    if(contador==0) {
-        return 1;
-    } else {
-        return 0;
-    }
+    if(contador==0)
+        return true;
+     
+    return false;
 }
 
 void mapa_declarar_imagens_usadas(Quadrado **imagens) {

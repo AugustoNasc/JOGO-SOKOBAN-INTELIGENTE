@@ -21,6 +21,7 @@ int main()
 {
     FILE *arquivo;
     sf::RenderWindow window(sf::VideoMode(LARGURA, LARGURA), "Gasparzinho");
+    window.setKeyRepeatEnabled(false); // Desativa a repetição de teclas
     GameScreen currentScreen = TITLE;
 
     sf::Music jogando, abertura;
@@ -220,6 +221,7 @@ int main()
                     }
 
                     else if((event.key.code==sf::Keyboard::Z)){ 
+                        std::cout << "zzzzz" << std::endl;
                         voltando_jogada(&mapa, level, voltando);
                         voltando++;
                         //mapa.especial_atual[1][3]=1;
@@ -241,12 +243,12 @@ int main()
 
                         declarar_posicoes_de_encaixe(&mapa);
 
-                        jogando.stop();
+                        //jogando.stop();
 
                         atualiza_posicao_jogador(gX, gY, mapa);
                         flag=0;
 
-                        jogando.play();
+                        //jogando.play();
                     }
                     //provisorio, so para admins
                     /*else if((event.key.code==sf::Keyboard::P)&&level!=13){ 
@@ -349,9 +351,34 @@ int main()
         //window.display();
         //window.clear(sf::Color::White);
 
-            window.display();
+        window.display();
+
+        if(finalizou_mapa(mapa)){
         
+        currentScreen = PARABENS;
+        apagar_jogadas(level);
+        if(level!=13){
+            level++;
+            Ultimo=0;
+        }
+        else{
+            level=1;
+            Ultimo=1;
+        }
+            guarda_salva_nivel(level);
+            sprintf(endereco, "mapastxt/mapa%d.txt", level);
+            arquivo = fopen(endereco, "rt");
+            fread(mapa.mapa, sizeof(char), 12*13, arquivo);
+            declarar_posicoes_de_encaixe(&mapa);
+        //PlaySound(conseguiu);
+        //SetSoundVolume(conseguiu, 0.3);
+        atualiza_posicao_jogador(gX, gY, mapa);
+        flag=0;
+
+            //PlayMusicStream(jogando);
     }
+        
+}
 
 
     delete[] imagens;

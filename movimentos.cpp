@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "movimentos.hpp"
 #include "voltajogada.hpp"
-#include <iostream>
 
 void troca_vazio(MAPA *mapa, int *x, int *y, int cont1, int cont2, int level, int *ja_andou){
 
@@ -46,7 +45,7 @@ void troca_caixa(int *x, int *y, int cont1, int cont2, MAPA *mapa, int level){
 
 void mover_personagem(int *x,int *y,int gFlag, MAPA *mapa, int level, sf::Clock &clock){
     sf::Time elapsed = clock.getElapsedTime();
-    if((*mapa).mapa[*y][*x]=='P'&& elapsed.asSeconds() >= 0.1f){
+    if((*mapa).mapa[*y][*x]=='P'&& elapsed.asSeconds() >= 0.2f){
 
     int ja_andou=0;
     int cont1, cont2;
