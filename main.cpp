@@ -69,11 +69,7 @@ int main()
     window.setFramerateLimit(144);
     sf::Clock clock; //marcar tempo, para não clicar instantaneamente assim que se troca de tela
     while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
+        
 
         window.clear();
         switch (currentScreen) {
@@ -193,11 +189,17 @@ int main()
                     }
                 }
 
-                if(event.type == sf::Event::KeyPressed){
-                
-                    atualiza_posicao_jogador(gX, gY, mapa);
-                    comando_por_tecla(event, flag, voltando, gX, gY, mapa, level, clock);
-
+                sf::Event event;
+                while (window.pollEvent(event)) {
+                    if (event.type == sf::Event::Closed)
+                    window.close();
+    
+                    if(event.type == sf::Event::KeyPressed){
+                    
+                        atualiza_posicao_jogador(gX, gY, mapa);
+                        comando_por_tecla(event, flag, voltando, gX, gY, mapa, level, clock);
+    
+                    }
                 }
             }
             break;
@@ -255,6 +257,7 @@ int main()
             default:
             break;
         }
+
         //window.display();
         //window.clear(sf::Color::White);
 
@@ -284,6 +287,7 @@ int main()
     
                 //PlayMusicStream(jogando);
     }
+
         
 }
 

@@ -3,6 +3,7 @@
 #include "movimentos.hpp"
 #include "voltajogada.hpp"
 #include "tela.hpp"
+#include <iostream>
 
 void troca_vazio(MAPA *mapa, int *x, int *y, int cont1, int cont2, int level, int *ja_andou){
 
@@ -46,7 +47,7 @@ void troca_caixa(int *x, int *y, int cont1, int cont2, MAPA *mapa, int level){
 
 void mover_personagem(int *x,int *y,int gFlag, MAPA *mapa, int level, sf::Clock &clock){
     sf::Time elapsed = clock.getElapsedTime();
-    if((*mapa).mapa[*y][*x]=='P'&& elapsed.asSeconds() >= 0.2f){
+    if((*mapa).mapa[*y][*x]=='P'&& elapsed.asSeconds() >= 0.01f){
 
     int ja_andou=0;
     int cont1, cont2;
@@ -128,9 +129,9 @@ void comando_por_tecla(sf::Event event, int &flag, int &voltando, int &gX, int &
                     else if((event.key.code==sf::Keyboard::Z)){ 
                         voltando_jogada(&mapa, level, voltando);
                         voltando++;
-                        //mapa.especial_atual[1][3]=1;
+                        mapa.especial_atual[1][3]=1;
                         flag=0;
-                        atualiza_posicao_jogador(gX, gY, mapa);
+                        //atualiza_posicao_jogador(gX, gY, mapa);
                     }
 
                     else if((event.key.code==sf::Keyboard::C)){ 
@@ -154,6 +155,7 @@ void comando_por_tecla(sf::Event event, int &flag, int &voltando, int &gX, int &
 
                         //jogando.play();
                     }
+}
                     //provisorio, so para admins
                     /*else if((event.key.code==sf::Keyboard::P)&&level!=13){ 
                         apagar_jogadas(level);
@@ -194,4 +196,4 @@ void comando_por_tecla(sf::Event event, int &flag, int &voltando, int &gX, int &
 
                         PlayMusicStream(jogando);
                     }*/
-}
+//}
