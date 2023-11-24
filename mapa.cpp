@@ -9,8 +9,8 @@
 #define PINTAR(parametro) (parametro).coordenada.x = k*DIMENSAO; \
                           (parametro).coordenada.y = j*DIMENSAO; \
                           \
-                          if(gFlag==1){ (parametro).coordenada.x-=15; } \
-                          if(gFlag==2){ (parametro).coordenada.x+=6; } \
+                          if(sentido==1){ (parametro).coordenada.x-=15; } \
+                          if(sentido==2){ (parametro).coordenada.x+=6; } \
                           \
                           sprite.setTexture((parametro).imagem); \
                           sprite.setTextureRect(sf::IntRect(0, 0, DIMENSAO, DIMENSAO)); \
@@ -64,7 +64,7 @@ void mapa_background_fundo(Quadrado **fundo) {
     }
 }
 
-void mapa_desenhando(int gFlag, MAPA mapa, Quadrado *imagens, Quadrado *fundo, int level, sf::RenderWindow &window) {
+void mapa_desenhando(direcaoPersonagem &sentido, MAPA mapa, Quadrado *imagens, Quadrado *fundo, int level, sf::RenderWindow &window) {
     sf::Sprite sprite;
 
     (fundo[level-1]).coordenada = sf::Vector2f(0, 0);
@@ -76,15 +76,15 @@ void mapa_desenhando(int gFlag, MAPA mapa, Quadrado *imagens, Quadrado *fundo, i
     for(int j=0; j<QTD_QUADRADOS; j++) {
         for(int k=0; k<QTD_QUADRADOS; k++) {
             if(mapa.mapa[j][k]=='P') {
-                if(gFlag==0) {
+                if(sentido==FRENTE) {
                     PINTAR(imagens[1]);
-                } else if(gFlag==1) {
+                } else if(sentido==ESQUERDA) {
                     PINTAR(imagens[2]);
-                } else if(gFlag==2) {
+                } else if(sentido==DIREITA) {
                     PINTAR(imagens[3]);
-                } else if(gFlag==3) {
+                } else if(sentido==BAIXO) {
                     PINTAR(imagens[4]);
-                } else if(gFlag==4) {
+                } else if(sentido==CIMA) {
                     PINTAR(imagens[5]);
                 }
             }

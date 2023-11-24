@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include "mapa.hpp"
+#include "tela.hpp"
 
 struct Vertex {
     sf::Vector2f position;
@@ -15,10 +17,10 @@ struct Graph {
     std::vector<Vertex> verticesInfo;
 };
 
-void drawGraph(const Graph& g);
-void grafo_do_jogo(Graph& g);
-void desenha_grafo_nas_posicoes(Graph& g);
-void colocar_peso_aresta(Graph& g, int i, int j);
-std::vector<int> dijkstra(const Graph& g, int source);
+void desenhaGrafo_e_direcionaMapa(const Graph&, sf::RenderWindow &, MAPA &, GameScreen &,  int &, int &, int &level);
+void grafo_do_jogo(Graph&);
+void desenha_grafo_nas_posicoes(Graph&, sf::RenderWindow &, MAPA &, GameScreen &, int &, int &, int &level);
+void colocar_peso_aresta(Graph&, int, int);
+std::vector<int> dijkstra(const Graph&, int);
 
 #endif

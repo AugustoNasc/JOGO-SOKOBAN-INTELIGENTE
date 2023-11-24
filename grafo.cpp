@@ -3,16 +3,16 @@
 #include <limits>
 #include <cmath>
 #include <iostream>
+#include "movimentos.hpp"
 
-void drawGraph(const Graph& g) {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Graph Visualization");
+void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA &mapa, GameScreen &currentScreen, int &gX, int &gY, int &level) {
 
     std::vector<sf::CircleShape> vertices(g.vertices);
     std::vector<sf::Text> labels(g.vertices);
     std::vector<sf::VertexArray> edges;
 
     sf::Font font;
-    if (!font.loadFromFile("arial_narrow_7.ttf")) {
+    if (!font.loadFromFile("assets/arial_narrow_7.ttf")) {
         std::cerr << "Erro ao carregar a fonte\n";
         return;
     }
@@ -43,7 +43,6 @@ void drawGraph(const Graph& g) {
         }
     }
 
-    while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -53,7 +52,7 @@ void drawGraph(const Graph& g) {
         window.clear();
 
         sf::Texture backgroundTexture;
-        if (!backgroundTexture.loadFromFile("fundo.png")){
+        if (!backgroundTexture.loadFromFile("assets/fundo.png")){
             //erro...
         }
 
@@ -71,8 +70,41 @@ void drawGraph(const Graph& g) {
             window.draw(labels[i]);
         }
 
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+                    for (int i = 0; i < g.vertices; ++i) {
+                        sf::Vector2f vertexPos = g.verticesInfo[i].position;
+                        float distance = std::sqrt(std::pow(mousePos.x - vertexPos.x, 2) +
+                                                  std::pow(mousePos.y - vertexPos.y, 2));
+
+                        if (distance <= 50) {  // Raio do círculo (raio dos vértices)
+                            std::cout << "Vértice " << i << " clicado!" << std::endl;
+                            // Adicione aqui qualquer ação que deseja executar ao clicar no vértice
+
+                            char endereco[50];
+                            sprintf(endereco, "mapastxt/mapa%d.txt", i+1);
+                            level=i+1;
+                            FILE *arquivo = fopen(endereco, "rt");
+                            fread(mapa.mapa, sizeof(char), 12*13, arquivo);
+                            declarar_posicoes_de_encaixe(&mapa);
+                            atualiza_posicao_jogador(gX, gY, mapa);
+                            currentScreen = GAMEPLAY;
+                            //PlaySound(conseguiu);
+                            //SetSoundVolume(conseguiu, 0.3);
+                            //atualiza_posicao_jogador(gX, gY, mapa);
+                            //sentido=FRENTE;
+                        }
+                    }
+                }
+            }
+        }
         window.display();
-    }
 }
 
 void grafo_do_jogo(Graph& g){
@@ -81,11 +113,27 @@ void grafo_do_jogo(Graph& g){
     float x = 50;
     float y = 50;
 
-    srand(static_cast<unsigned int>(time(nullptr))); // Inicializa a semente com o tempo atual
-    for (int i = 0; i < g.vertices; ++i) {
-        g.verticesInfo.push_back({sf::Vector2f(60 + rand() % 700, 30 + rand() % 500)});
-    }
+    x+=120;
+    y+=10;
+    g.verticesInfo.push_back({sf::Vector2f(x, y)});
+    
+    x+=150;
+    y+=30;
+    g.verticesInfo.push_back({sf::Vector2f(x, y)});
 
+    x+=160;
+    y-=10;
+    g.verticesInfo.push_back({sf::Vector2f(x, y)});
+
+    for (int i = 3; i < g.vertices; ++i) {
+        x+=120;
+        y+=10;
+        if(x>=580){
+            x=50;
+            y+=150;
+        }
+        g.verticesInfo.push_back({sf::Vector2f(x, y)});
+    }
     // Inicialize a matriz de adjacência e adicione as conexões conforme necessário
     g.adjacencyMatrix.resize(g.vertices, std::vector<int>(g.vertices, 0));
 
@@ -98,37 +146,29 @@ void grafo_do_jogo(Graph& g){
     }
 
     colocar_peso_aresta(g, 0, 1);
-    colocar_peso_aresta(g, 0, 1);
-    colocar_peso_aresta(g, 0, 2);
     colocar_peso_aresta(g, 1, 2);
     colocar_peso_aresta(g, 1, 3);
-    colocar_peso_aresta(g, 2, 3);
+    colocar_peso_aresta(g, 2, 7);
     colocar_peso_aresta(g, 3, 4);
-    colocar_peso_aresta(g, 3, 6);
     colocar_peso_aresta(g, 4, 5);
-    colocar_peso_aresta(g, 4, 6);
     colocar_peso_aresta(g, 5, 6);
     colocar_peso_aresta(g, 5, 8);
+    colocar_peso_aresta(g, 5, 10); 
     colocar_peso_aresta(g, 6, 7); 
-    colocar_peso_aresta(g, 6, 10);
-    colocar_peso_aresta(g, 7, 8); 
     colocar_peso_aresta(g, 7, 10);
     colocar_peso_aresta(g, 8, 9); 
-    colocar_peso_aresta(g, 8, 11);
     colocar_peso_aresta(g, 9, 10);
-    colocar_peso_aresta(g, 9, 11);
     colocar_peso_aresta(g, 10, 11);
     colocar_peso_aresta(g, 11, 12);
-    colocar_peso_aresta(g, 12, 13);
 }
 
-void desenha_grafo_nas_posicoes(Graph& g){
+void desenha_grafo_nas_posicoes(Graph& g, sf::RenderWindow &window, MAPA & mapa, GameScreen &currentScreen, int &gX, int &gY, int& level){
     // Gere as posições aleatórias para os vértices
     std::vector<sf::Vector2f> vertexPositions;
     for (int i = 0; i < g.vertices; ++i) {
         vertexPositions.push_back(g.verticesInfo[i].position);
     }
-    drawGraph(g);
+    desenhaGrafo_e_direcionaMapa(g, window, mapa, currentScreen, gX, gY, level);
 }
 
 
@@ -163,50 +203,3 @@ std::vector<int> dijkstra(const Graph& g, int source) {
 
     return dist;
 }
-
-/*
-void grafo_do_jogo(Graph& g){
-    g.vertices = 13;
-
-    float x = 50;
-    float y = 50;
-
-    srand(static_cast<unsigned int>(time(nullptr))); // Inicializa a semente com o tempo atual
-    for (int i = 0; i < g.vertices; ++i) {
-        g.verticesInfo[i].position.x = 60 + rand() % 700; // Ajuste conforme necessário
-        g.verticesInfo[i].position.y = 30 + rand() % 500;  // Ajuste conforme necessário
-    }
-
-    for (int i = 0; i < g.vertices; ++i) {
-        for (int j = 0; j < g.vertices; ++j) {
-            if (i != j) {
-                g.adjacencyMatrix[i][j] = 0;
-            }
-        }
-    }
-    // Inicialize a matriz de adjacência e adicione as conexões conforme necessário
-    g.adjacencyMatrix.resize(g.vertices, std::vector<int>(g.vertices, 0));
-    colocar_peso_aresta(g, 0, 1);
-    //g.adjacencyMatrix[0][1] = 1;
-    //g.adjacencyMatrix[0][2] = 1;
-    //g.adjacencyMatrix[1][2] = 1;
-    //g.adjacencyMatrix[1][3] = 1;
-    //g.adjacencyMatrix[2][3] = 1;
-    //g.adjacencyMatrix[3][4] = 1;
-    //g.adjacencyMatrix[3][6] = 1;
-    //g.adjacencyMatrix[4][5] = 1;
-    //g.adjacencyMatrix[4][6] = 1;
-    //g.adjacencyMatrix[5][6] = 1;
-    //g.adjacencyMatrix[5][8] = 1;
-    //g.adjacencyMatrix[6][7] = 1; 
-    //g.adjacencyMatrix[6][10] = 1;
-    //g.adjacencyMatrix[7][8] = 1; 
-    //g.adjacencyMatrix[7][10] = 1;
-    //g.adjacencyMatrix[8][9] = 1; 
-    //g.adjacencyMatrix[8][11] = 1;
-    //g.adjacencyMatrix[9][10] = 1;
-    //g.adjacencyMatrix[9][11] = 1;
-    //g.adjacencyMatrix[10][11] = 1;
-    //g.adjacencyMatrix[11][12] = 1;
-    //g.adjacencyMatrix[12][13] = 1;
-}*/

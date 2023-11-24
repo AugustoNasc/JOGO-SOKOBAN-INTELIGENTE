@@ -5,6 +5,31 @@
 #include "tela.hpp"
 #include <iostream>
 
+#define QTD_QUADRADOS 12
+
+/* class JOGO{
+    public:
+        int gX, gY;
+        MAPA mapa;
+        direcaoPersonagem sentido = FRENTE;
+        JOGO(){
+            sentido = FRENTE;
+            gX=0; gY=0;
+            declarar_posicoes_de_encaixe(&mapa);
+            atualiza_posicao_jogador(gX, gY, mapa);
+        }
+};*/
+
+void atualiza_posicao_jogador(int& x, int& y, MAPA mapa){
+            for(int i=0; i<QTD_QUADRADOS; i++){
+                    for(int j=0; j<QTD_QUADRADOS; j++){
+                        if(mapa.mapa[i][j]=='P'){
+                        y=i; x=j;
+                        }
+                    }
+            }
+}
+
 void troca_vazio(MAPA *mapa, int *x, int *y, int cont1, int cont2, int level, int *ja_andou){
 
             char aux;
@@ -45,13 +70,13 @@ void troca_caixa(int *x, int *y, int cont1, int cont2, MAPA *mapa, int level){
 
 }
 
-void mover_personagem(int *x,int *y,int gFlag, MAPA *mapa, int level, sf::Clock &clock){
+void mover_personagem(int *x,int *y,direcaoPersonagem &sentido, MAPA *mapa, int level, sf::Clock &clock){
     sf::Time elapsed = clock.getElapsedTime();
     if((*mapa).mapa[*y][*x]=='P'&& elapsed.asSeconds() >= 0.01f){
 
     int ja_andou=0;
     int cont1, cont2;
-    if(gFlag == 1)
+    if(sentido == 1)
     {
       cont1=-1; cont2=0;
       if(*x+cont1>=0 && *x+cont1<12 && *y+cont2>=0 && *y+cont2<12){
@@ -63,7 +88,7 @@ void mover_personagem(int *x,int *y,int gFlag, MAPA *mapa, int level, sf::Clock 
 
     }
   
-    else if(gFlag == 2)
+    else if(sentido == 2)
     {
         cont1=1; cont2=0;
       if(*x+cont1>=0 && *x+cont1<12 && *y+cont2>=0 && *y+cont2<12){
@@ -74,7 +99,7 @@ void mover_personagem(int *x,int *y,int gFlag, MAPA *mapa, int level, sf::Clock 
 
 
     }
-    else if(gFlag == 3)
+    else if(sentido == 3)
     {
         cont1=0; cont2=1;
       if(*x+cont1>=0 && *x+cont1<12 && *y+cont2>=0 && *y+cont2<12){
@@ -86,7 +111,7 @@ void mover_personagem(int *x,int *y,int gFlag, MAPA *mapa, int level, sf::Clock 
 
     }
   
-    else if(gFlag == 4)
+    else if(sentido == 4)
     {
         cont1=0; cont2=-1;
       if(*x+cont1>=0 && *x+cont1<12 && *y+cont2>=0 && *y+cont2<12){
@@ -101,36 +126,35 @@ void mover_personagem(int *x,int *y,int gFlag, MAPA *mapa, int level, sf::Clock 
     }
 }
 
-void comando_por_tecla(sf::Event event, int &flag, int &voltando, int &gX, int &gY, MAPA &mapa, int level, sf::Clock &clock){
+void comando_por_tecla(sf::Event event, direcaoPersonagem& sentido, int &voltando, int &gX, int &gY, MAPA &mapa, int level, sf::Clock &clock){
                     if((event.key.code==sf::Keyboard::Left)){ 
-                        flag=1; 
+                        sentido=ESQUERDA; 
                         voltando=0;
-                        mover_personagem(&gX, &gY, flag, &mapa, level, clock);
+                        mover_personagem(&gX, &gY, sentido, &mapa, level, clock);
                     }
 
                     else if((event.key.code==sf::Keyboard::Right)){ 
-                        flag=2;
+                        sentido=DIREITA;
                         voltando=0;
-                        mover_personagem(&gX, &gY, flag, &mapa, level, clock);
+                        mover_personagem(&gX, &gY, sentido, &mapa, level, clock);
                     }
 
                     else if((event.key.code==sf::Keyboard::Down)){ 
-                        flag=3;
+                        sentido=BAIXO;
                         voltando=0;
-                        mover_personagem(&gX, &gY, flag, &mapa, level, clock);
+                        mover_personagem(&gX, &gY, sentido, &mapa, level, clock);
                     }
 
                     else if((event.key.code==sf::Keyboard::Up)){ 
-                        flag=4; 
+                        sentido=CIMA; 
                         voltando=0;
-                        mover_personagem(&gX, &gY, flag, &mapa, level, clock);
+                        mover_personagem(&gX, &gY, sentido, &mapa, level, clock);
                     }
 
                     else if((event.key.code==sf::Keyboard::Z)){ 
                         voltando_jogada(&mapa, level, voltando);
                         voltando++;
-                        mapa.especial_atual[1][3]=1;
-                        flag=0;
+                        sentido=FRENTE;
                         //atualiza_posicao_jogador(gX, gY, mapa);
                     }
 
@@ -138,7 +162,7 @@ void comando_por_tecla(sf::Event event, int &flag, int &voltando, int &gX, int &
                         if(voltando!=0){
                             adiantando_jogada(&mapa, level, voltando);
                             voltando--;
-                            flag=0;
+                            sentido=FRENTE;
                             atualiza_posicao_jogador(gX, gY, mapa);
                         }
                     }
@@ -151,7 +175,7 @@ void comando_por_tecla(sf::Event event, int &flag, int &voltando, int &gX, int &
                         //jogando.stop();
 
                         atualiza_posicao_jogador(gX, gY, mapa);
-                        flag=0;
+                        sentido=FRENTE;
 
                         //jogando.play();
                     }
@@ -172,7 +196,7 @@ void comando_por_tecla(sf::Event event, int &flag, int &voltando, int &gX, int &
                         StopMusicStream(jogando);
 
                         atualiza_posicao_jogador(gX, gY, mapa);
-                        flag=0;
+                        sentido=FRENTE;
 
                         PlayMusicStream(jogando);
                     }
@@ -192,7 +216,7 @@ void comando_por_tecla(sf::Event event, int &flag, int &voltando, int &gX, int &
                         StopMusicStream(jogando);
 
                         atualiza_posicao_jogador(gX, gY, mapa);
-                        flag=0;
+                        sentido=FRENTE;
 
                         PlayMusicStream(jogando);
                     }*/

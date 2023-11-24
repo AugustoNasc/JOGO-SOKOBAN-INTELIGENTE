@@ -14,9 +14,11 @@ struct MAPA {
     int especial_atual[12][12];
 };
 
+typedef enum direcaoPersonagem { FRENTE = 0, ESQUERDA=1, DIREITA=2, BAIXO=3, CIMA=4 } direcaoPersonagem;
+
 void declarar_posicoes_de_encaixe(MAPA*);
 bool finalizou_mapa(MAPA);
-void mapa_desenhando(int, MAPA, Quadrado*, Quadrado*, int, sf::RenderWindow&);
+void mapa_desenhando(direcaoPersonagem &, MAPA, Quadrado*, Quadrado*, int, sf::RenderWindow&);
 void mapa_declarar_imagens_usadas(Quadrado**);
 void mapa_background_fundo(Quadrado**);
 MAPA mapa_rezetar(int);

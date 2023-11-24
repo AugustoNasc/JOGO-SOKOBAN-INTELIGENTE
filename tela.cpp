@@ -3,17 +3,6 @@
 #include "tela.hpp"
 #include <iostream>
 
-#define QTD_QUADRADOS 12 // Quantidade de quadrados na tela
-
-void atualiza_posicao_jogador(int& x, int& y, MAPA mapa){
-            for(int i=0; i<QTD_QUADRADOS; i++){
-                    for(int j=0; j<QTD_QUADRADOS; j++){
-                        if(mapa.mapa[i][j]=='P'){
-                        y=i; x=j;
-                        }
-                    }
-            }
-}
 
 void tela_titulo(sf::RenderWindow &window){
     sf::Font font;\

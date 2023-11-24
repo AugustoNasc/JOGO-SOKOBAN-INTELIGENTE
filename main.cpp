@@ -8,6 +8,7 @@
 #include "voltajogada.hpp"
 #include "guarda_nivel.hpp"
 #include "tela.hpp"
+#include "grafo.hpp"
 
 #define QTD_QUADRADOS 12 
 #define LARGURA 600
@@ -37,7 +38,7 @@ int main()
     if (!abertura.openFromFile("assets/musica/suspira.mp3"))
         return -1;*/
 
-    int flag=0;
+    direcaoPersonagem sentido = FRENTE;
     int level=1, maximo=1, Ultimo=0;
 
     Quadrado *imagens;
@@ -68,6 +69,7 @@ int main()
     int voltando=0;
     window.setFramerateLimit(144);
     sf::Clock clock; //marcar tempo, para não clicar instantaneamente assim que se troca de tela
+    
     while (window.isOpen()) {
         
 
@@ -100,7 +102,13 @@ int main()
             break;
 
             case ESCOLHER_NIVEL:{
-                int maximo = guarda_ler_nivel();
+
+                Graph g;
+
+                grafo_do_jogo(g);
+
+                desenha_grafo_nas_posicoes(g, window, mapa, currentScreen, gX, gY, level);
+                /* int maximo = ultimo_nivel_desbloqueado();
 
                 sf::Texture texture;
                 if (!texture.loadFromFile("assets/fundo.png"))
@@ -158,14 +166,14 @@ int main()
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
                 {
                     // currentScreen = TITLE;
-                }
+                } */
             }
             break;
 
             case GAMEPLAY:{
 
                 sf::Texture backgroundTexture;
-                mapa_desenhando(flag, mapa, imagens, fundo, level, window);
+                mapa_desenhando(sentido, mapa, imagens, fundo, level, window);
 
                 sf::Sprite background(backgroundTexture);
                 sf::Vector2i posicaoMouse = sf::Mouse::getPosition(window);
@@ -193,12 +201,12 @@ int main()
                 while (window.pollEvent(event)) {
                     if (event.type == sf::Event::Closed)
                     window.close();
-    
+
                     if(event.type == sf::Event::KeyPressed){
                     
                         atualiza_posicao_jogador(gX, gY, mapa);
-                        comando_por_tecla(event, flag, voltando, gX, gY, mapa, level, clock);
-    
+                        comando_por_tecla(event, sentido, voltando, gX, gY, mapa, level, clock);
+
                     }
                 }
             }
@@ -275,7 +283,7 @@ int main()
                 level=1;
                 Ultimo=1;
             }
-                guarda_salva_nivel(level);
+                salvar_nivel(level);
                 sprintf(endereco, "mapastxt/mapa%d.txt", level);
                 arquivo = fopen(endereco, "rt");
                 fread(mapa.mapa, sizeof(char), 12*13, arquivo);
@@ -283,7 +291,7 @@ int main()
             //PlaySound(conseguiu);
             //SetSoundVolume(conseguiu, 0.3);
             atualiza_posicao_jogador(gX, gY, mapa);
-            flag=0;
+            sentido=FRENTE;
     
                 //PlayMusicStream(jogando);
     }

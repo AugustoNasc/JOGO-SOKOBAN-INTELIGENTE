@@ -3,12 +3,12 @@
 
 #include "mapa.hpp"
 
-void troca_vazio(MAPA*, int*, int*, int, int, int, int*);
+void atualiza_posicao_jogador(int&, int&, MAPA);
 
+void troca_vazio(MAPA*, int*, int*, int, int, int, int*);
 void troca_caixa(int*, int*, int, int, MAPA*, int);
 
-void mover_personagem(int*,int*,int, MAPA*, int, sf::Clock&);
-
-void comando_por_tecla(sf::Event event, int &flag, int &voltando, int &gX, int &gY, MAPA &mapa, int level, sf::Clock &clock);
+void mover_personagem(int*,int*,direcaoPersonagem&, MAPA*, int, sf::Clock&);
+void comando_por_tecla(sf::Event, direcaoPersonagem &, int &, int &, int &, MAPA &, int, sf::Clock &);
 
 #endif
