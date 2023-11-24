@@ -168,130 +168,37 @@ int main()
 
             case GAMEPLAY:{
 
-            sf::Texture backgroundTexture;
-            mapa_desenhando(flag, mapa, imagens, fundo, level, window);
+                sf::Texture backgroundTexture;
+                mapa_desenhando(flag, mapa, imagens, fundo, level, window);
 
-            sf::Sprite background(backgroundTexture);
-            sf::Vector2i posicaoMouse = sf::Mouse::getPosition(window);
-            double p = window.getSize().x / 600.0;
-            sf::Vector2f scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
-            
-            sf::RectangleShape mouse(sf::Vector2f(15, 15));
-            mouse.setPosition(scaledMousePosition);
+                sf::Sprite background(backgroundTexture);
+                sf::Vector2i posicaoMouse = sf::Mouse::getPosition(window);
+                double p = window.getSize().x / 600.0;
+                sf::Vector2f scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
+                
+                sf::RectangleShape mouse(sf::Vector2f(15, 15));
+                mouse.setPosition(scaledMousePosition);
 
-            sf::RectangleShape botaoNivel;
-            botaoNivel.setPosition(200, 500);
-            botaoNivel.setSize(sf::Vector2f(200, 60));
+                sf::RectangleShape botaoNivel;
+                botaoNivel.setPosition(200, 500);
+                botaoNivel.setSize(sf::Vector2f(200, 60));
 
-            legenda_gameplay(window, currentScreen, clock);
+                legenda_gameplay(window, currentScreen, clock);
 
-            // Verificar a colisão
-            if (botaoNivel.getGlobalBounds().intersects(mouse.getGlobalBounds())) {
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    // Ação quando o botão esquerdo do mouse é liberado
-                    currentScreen = MENU;
+                // Verificar a colisão
+                if (botaoNivel.getGlobalBounds().intersects(mouse.getGlobalBounds())) {
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                        // Ação quando o botão esquerdo do mouse é liberado
+                        currentScreen = MENU;
+                    }
                 }
-            }
 
-            if(event.type == sf::Event::KeyPressed){
-            
-                atualiza_posicao_jogador(gX, gY, mapa);
-                if((event.key.code==sf::Keyboard::Left)){ 
-                        flag=1; 
-                        voltando=0;
-                        mover_personagem(&gX, &gY, flag, &mapa, level, clock);
-                    }
+                if(event.type == sf::Event::KeyPressed){
+                
+                    atualiza_posicao_jogador(gX, gY, mapa);
+                    comando_por_tecla(event, flag, voltando, gX, gY, mapa, level, clock);
 
-                    else if((event.key.code==sf::Keyboard::Right)){ 
-                        flag=2;
-                        voltando=0;
-                        mover_personagem(&gX, &gY, flag, &mapa, level, clock);
-                    }
-
-                    else if((event.key.code==sf::Keyboard::Down)){ 
-                        flag=3;
-                        voltando=0;
-                        mover_personagem(&gX, &gY, flag, &mapa, level, clock);
-                    }
-
-                    else if((event.key.code==sf::Keyboard::Up)){ 
-                        flag=4; 
-                        voltando=0;
-                        mover_personagem(&gX, &gY, flag, &mapa, level, clock);
-                    }
-
-                    else if((event.key.code==sf::Keyboard::Z)){ 
-                        std::cout << "zzzzz" << std::endl;
-                        voltando_jogada(&mapa, level, voltando);
-                        voltando++;
-                        //mapa.especial_atual[1][3]=1;
-                        flag=0;
-                        atualiza_posicao_jogador(gX, gY, mapa);
-                    }
-
-                    else if((event.key.code==sf::Keyboard::C)){ 
-                        if(voltando!=0){
-                            adiantando_jogada(&mapa, level, voltando);
-                            voltando--;
-                            flag=0;
-                            atualiza_posicao_jogador(gX, gY, mapa);
-                        }
-                    }
-                    else if((event.key.code==sf::Keyboard::X)){ 
-
-                        mapa = mapa_rezetar(level);
-
-                        declarar_posicoes_de_encaixe(&mapa);
-
-                        //jogando.stop();
-
-                        atualiza_posicao_jogador(gX, gY, mapa);
-                        flag=0;
-
-                        //jogando.play();
-                    }
-                    //provisorio, so para admins
-                    /*else if((event.key.code==sf::Keyboard::P)&&level!=13){ 
-                        apagar_jogadas(level);
-                        level++;
-
-                        sprintf(endereco, "mapastxt/mapa%d.txt", level);
-
-                        arquivo = fopen(endereco, "rt");
-
-                        fread(mapa.mapa, sizeof(char), 12*13, arquivo);
-
-                        declarar_posicoes_de_encaixe(&mapa);
-
-                        StopMusicStream(jogando);
-
-                        atualiza_posicao_jogador(gX, gY, mapa);
-                        flag=0;
-
-                        PlayMusicStream(jogando);
-                    }
-
-                    else if((event.key.code==sf::Keyboard::O)&&level!=1){ 
-                        apagar_jogadas(level);
-                        level--;
-
-                        sprintf(endereco, "mapastxt/mapa%d.txt", level);
-
-                        arquivo = fopen(endereco, "rt");
-
-                        fread(mapa.mapa, sizeof(char), 12*13, arquivo);
-
-                        declarar_posicoes_de_encaixe(&mapa);
-
-                        StopMusicStream(jogando);
-
-                        atualiza_posicao_jogador(gX, gY, mapa);
-                        flag=0;
-
-                        PlayMusicStream(jogando);
-                    }*/
-
-                    }
+                }
             }
             break;
 
@@ -355,27 +262,27 @@ int main()
 
         if(finalizou_mapa(mapa)){
         
-        currentScreen = PARABENS;
-        apagar_jogadas(level);
-        if(level!=13){
-            level++;
-            Ultimo=0;
-        }
-        else{
-            level=1;
-            Ultimo=1;
-        }
-            guarda_salva_nivel(level);
-            sprintf(endereco, "mapastxt/mapa%d.txt", level);
-            arquivo = fopen(endereco, "rt");
-            fread(mapa.mapa, sizeof(char), 12*13, arquivo);
-            declarar_posicoes_de_encaixe(&mapa);
-        //PlaySound(conseguiu);
-        //SetSoundVolume(conseguiu, 0.3);
-        atualiza_posicao_jogador(gX, gY, mapa);
-        flag=0;
-
-            //PlayMusicStream(jogando);
+            //currentScreen = PARABENS;
+            apagar_jogadas(level);
+            if(level!=13){
+                level++;
+                Ultimo=0;
+            }
+            else{
+                level=1;
+                Ultimo=1;
+            }
+                guarda_salva_nivel(level);
+                sprintf(endereco, "mapastxt/mapa%d.txt", level);
+                arquivo = fopen(endereco, "rt");
+                fread(mapa.mapa, sizeof(char), 12*13, arquivo);
+                declarar_posicoes_de_encaixe(&mapa);
+            //PlaySound(conseguiu);
+            //SetSoundVolume(conseguiu, 0.3);
+            atualiza_posicao_jogador(gX, gY, mapa);
+            flag=0;
+    
+                //PlayMusicStream(jogando);
     }
         
 }
