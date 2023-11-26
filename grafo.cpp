@@ -103,7 +103,8 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
                             std::cout << "Vértice " << i << " clicado!" << std::endl;
                             // Adicione aqui qualquer ação que deseja executar ao clicar no vértice
 
-                            mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition);
+                            int destino = i;
+                            mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition, 0,i);
 
                             char endereco[50];
                             sprintf(endereco, "mapastxt/mapa%d.txt", i+1);
@@ -180,29 +181,19 @@ void grafo_do_jogo(Graph& g){
     colocar_peso_aresta(g, 11, 12);
 }
 
-/* void desenha_grafo_nas_posicoes(Graph& g, sf::RenderWindow &window, MAPA & mapa, GameScreen &currentScreen, int &gX, int &gY, int& level){
-    // Gere as posições aleatórias para os vértices
-    std::vector<sf::Vector2f> vertexPositions;
-    for (int i = 0; i < g.vertices; ++i) {
-        vertexPositions.push_back(g.verticesInfo[i].position);
-    }
-    desenhaGrafo_e_direcionaMapa(g, window, mapa, currentScreen, gX, gY, level);
-} */
-
-
 void colocar_peso_aresta(Graph& g, int i, int j){
     float distance = std::sqrt(std::pow(g.verticesInfo[i].position.x - g.verticesInfo[j].position.x, 2) +\
                                            std::pow(g.verticesInfo[i].position.y - g.verticesInfo[j].position.y, 2));
     g.adjacencyMatrix[i][j] = static_cast<int>(distance);
 }
 
-std::vector<int> dijkstra(const Graph& g, int source) {
+std::vector<int> dijkstra(const Graph& g, int nohAtual) {
 
     std::vector<int> dist(g.vertices, std::numeric_limits<int>::max());
-    dist[source] = 0;
+    dist[nohAtual] = 0;
 
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
-    pq.push({0, source});
+    pq.push({0, nohAtual});
 
     while (!pq.empty()) {
         int u = pq.top().second;
@@ -221,4 +212,37 @@ std::vector<int> dijkstra(const Graph& g, int source) {
     }
 
     return dist;
+}
+
+std::vector<int> menorCaminho(const Graph& g, int nohAtual, int destino) { //Djkistra
+    std::vector<int> dist(g.vertices, std::numeric_limits<int>::max());
+    std::vector<int> prev(g.vertices, -1);
+    dist[nohAtual] = 0;
+
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
+    pq.push({0, nohAtual});
+
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        pq.pop();
+
+        for (int v = 0; v < g.vertices; ++v) {
+            if (g.adjacencyMatrix[u][v] > 0) {
+                int weight = g.adjacencyMatrix[u][v];
+
+                if (dist[u] + weight < dist[v]) {
+                    dist[v] = dist[u] + weight;
+                    prev[v] = u;
+                    pq.push({dist[v], v});
+                }
+            }
+        }
+    }
+
+    std::vector<int> caminho;
+    for (int v = destino; v != -1; v = prev[v])
+        caminho.push_back(v);
+    std::reverse(caminho.begin(), caminho.end());
+
+    return caminho;
 }

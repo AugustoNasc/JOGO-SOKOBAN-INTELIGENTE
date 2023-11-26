@@ -203,31 +203,40 @@ namespace mv{
                         }
     }
 
-    void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& character, std::vector<sf::CircleShape> vertices,
-                            std::vector<sf::Text> labels, std::vector<sf::VertexArray> edges, sf::Vector2f& characterPosition) {
-        
-        sf::Texture backgroundTexture;
-        if (!backgroundTexture.loadFromFile("assets/fundo.png")) {
-            std::cerr << "Erro ao carregar a textura do fundo\n";
-            return;
-        }
+void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& character,
+                            std::vector<sf::CircleShape>& vertices, std::vector<sf::Text>& labels,
+                            std::vector<sf::VertexArray>& edges, sf::Vector2f& characterPosition, int source, int destino) {
 
-        sf::Sprite background(backgroundTexture);
-
-        std::vector<int> shortestPath = dijkstra(g, 0);
+        std::vector<int> caminho = menorCaminho(g, source, destino);
         float speed = 200.0f;
 
-        for (int i = 1; i < shortestPath.size(); ++i) {
-            int targetVertex = shortestPath[i];
-            sf::Vector2f targetPosition = g.verticesInfo[targetVertex].position;
+        for (int i = 1; i < caminho.size(); ++i) {
+            int currentVertex = caminho[i - 1];
+            int nextVertex = caminho[i];
 
-            // Atualize a posição do personagem em direção ao próximo vértice
-            sf::Vector2f direction = targetPosition - characterPosition;
+            // Verifica se o próximo vértice é o destino
+            if (nextVertex == destino) {
+                std::cout << "Chegou ao destino!" << std::endl;
+                return;
+            }
+
+            sf::Vector2f currentPos = g.verticesInfo[currentVertex].position;
+            sf::Vector2f nextPos = g.verticesInfo[nextVertex].position;
+
+            // Atualiza a posição do personagem em direção ao próximo vértice
+            sf::Vector2f direction = nextPos - currentPos;
             float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
             direction /= distance;  // Normalização do vetor
 
             sf::Clock timer;
             float elapsedSeconds = 0.0f;
+
+            sf::Texture backgroundTexture;
+            if (!backgroundTexture.loadFromFile("assets/fundo.png")){
+            //erro...
+            }
+
+            sf::Sprite background(backgroundTexture);
 
             while (elapsedSeconds < distance / speed) {
                 float deltaTime = timer.restart().asSeconds();
@@ -237,7 +246,7 @@ namespace mv{
 
                 window.clear();
                 window.draw(background);
-                
+
                 // Desenhe as arestas
                 for (const auto& edge : edges) {
                     window.draw(edge);
@@ -249,7 +258,7 @@ namespace mv{
                     window.draw(labels[i]);
                 }
 
-                character.setPosition(characterPosition);
+                character.setPosition(characterPosition-sf::Vector2f(25, 25));
                 window.draw(character);
                 window.display();
 
@@ -263,10 +272,8 @@ namespace mv{
                     }
                 }
             }
-
-            characterPosition = targetPosition;  // Garante que o personagem esteja exatamente no destino
         }
-
-        std::cout << "Chegou ao destino!" << std::endl;
     }
+
+
 }
