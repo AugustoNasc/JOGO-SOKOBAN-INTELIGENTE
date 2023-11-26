@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 # Nome do executável
-EXEC = sfml-app
+EXEC = Sokoban
 
 # Arquivos .cpp
 CPP_FILES = main.cpp guarda_nivel.cpp mapa.cpp movimentos.cpp voltajogada.cpp tela.cpp grafo.cpp
