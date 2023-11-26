@@ -28,15 +28,6 @@ int main()
     sf::Music jogando, abertura;
     sf::SoundBuffer conseguiuBuffer;
     sf::Sound conseguiu;
-    
-    /*if (!conseguiuBuffer.loadFromFile("assets/musica/fim_fase.mp3"))
-        return -1;
-
-    if (!jogando.openFromFile("assets/musica/menumsc.mp3"))
-        return -1;
-
-    if (!abertura.openFromFile("assets/musica/suspira.mp3"))
-        return -1;*/
 
     direcaoPersonagem sentido = FRENTE;
     int level=1, maximo=1, Ultimo=0;
@@ -219,7 +210,7 @@ int main()
         if(finalizou_mapa(mapa)){
         
             //currentScreen = PARABENS;
-            apagar_jogadas(level);
+            vtj::apagar_jogadas(level);
             if(level!=13){
                 level++;
                 Ultimo=0;

@@ -6,15 +6,15 @@
 #define QTD_QUADRADOS 12
 #define LARGURA 600
 #define DIMENSAO LARGURA/QTD_QUADRADOS
-#define PINTAR(parametro) (parametro).coordenada.x = k*DIMENSAO; \
-                          (parametro).coordenada.y = j*DIMENSAO; \
+#define PINTAR(figura) (figura).coordenada.x = k*DIMENSAO; \
+                          (figura).coordenada.y = j*DIMENSAO; \
                           \
-                          if(sentido==1){ (parametro).coordenada.x-=15; } \
-                          if(sentido==2){ (parametro).coordenada.x+=6; } \
+                          if(sentido==1){ (figura).coordenada.x-=15; } \
+                          if(sentido==2){ (figura).coordenada.x+=6; } \
                           \
-                          sprite.setTexture((parametro).imagem); \
+                          sprite.setTexture((figura).imagem); \
                           sprite.setTextureRect(sf::IntRect(0, 0, DIMENSAO, DIMENSAO)); \
-                          sprite.setPosition((parametro).coordenada.x, (parametro).coordenada.y); \
+                          sprite.setPosition((figura).coordenada.x, (figura).coordenada.y); \
                           window.draw(sprite);
 
 void declarar_posicoes_de_encaixe(MAPA *mapa) {
@@ -104,7 +104,7 @@ MAPA mapa_rezetar(int level) {
     char endereco[50];
     MAPA mapa_rezetado;
     FILE *arquivo;
-    apagar_jogadas(level);
+    vtj::apagar_jogadas(level);
     sprintf(endereco, "mapastxt/mapa%d.txt", level);
     arquivo = fopen(endereco, "rt");
     fread(mapa_rezetado.mapa, sizeof(char), 12*13, arquivo);
