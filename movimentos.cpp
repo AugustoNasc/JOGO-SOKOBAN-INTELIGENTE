@@ -127,7 +127,10 @@ namespace mv{
         }
     }
 
-    void comando_por_tecla(sf::Event event, direcaoPersonagem& sentido, int &voltando, int &gX, int &gY, MAPA &mapa, int level, sf::Clock &clock){
+    void comando_por_tecla(sf::Event event, direcaoPersonagem& sentido, int &voltando, int &gX, int &gY, MAPA &mapa, int &level, sf::Clock &clock){
+                        char endereco[50];
+                        FILE *arquivo;
+
                         if((event.key.code==sf::Keyboard::A)||(event.key.code==sf::Keyboard::Left)){ 
                             sentido=ESQUERDA; 
                             voltando=0;
@@ -173,16 +176,13 @@ namespace mv{
 
                             declarar_posicoes_de_encaixe(&mapa);
 
-                            //jogando.stop();
-
                             atualiza_posicao_jogador(gX, gY, mapa);
                             sentido=FRENTE;
 
-                            //jogando.play();
                         }
-    }
+    
                         //provisorio, so para admins
-                        /*else if((event.key.code==sf::Keyboard::P)&&level!=13){ 
+                        else if((event.key.code==sf::Keyboard::P)&&level!=13){ 
                             apagar_jogadas(level);
                             level++;
 
@@ -194,12 +194,9 @@ namespace mv{
 
                             declarar_posicoes_de_encaixe(&mapa);
 
-                            StopMusicStream(jogando);
-
                             atualiza_posicao_jogador(gX, gY, mapa);
                             sentido=FRENTE;
-
-                            PlayMusicStream(jogando);
+                            
                         }
 
                         else if((event.key.code==sf::Keyboard::O)&&level!=1){ 
@@ -214,14 +211,10 @@ namespace mv{
 
                             declarar_posicoes_de_encaixe(&mapa);
 
-                            StopMusicStream(jogando);
-
                             atualiza_posicao_jogador(gX, gY, mapa);
                             sentido=FRENTE;
-
-                            PlayMusicStream(jogando);
-                        }*/
-    //}
+                        }
+    }
 
     void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& character, std::vector<sf::CircleShape> vertices,
                             std::vector<sf::Text> labels, std::vector<sf::VertexArray> edges, sf::Vector2f& characterPosition) {

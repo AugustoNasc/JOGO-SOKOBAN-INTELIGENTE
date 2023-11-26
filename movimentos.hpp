@@ -11,7 +11,7 @@ namespace mv{
     void troca_caixa(int*, int*, int, int, MAPA*, int);
 
     void mover_personagem(int*,int*,direcaoPersonagem&, MAPA*, int, sf::Clock&);
-    void comando_por_tecla(sf::Event, direcaoPersonagem &, int &, int &, int &, MAPA &, int, sf::Clock &);
+    void comando_por_tecla(sf::Event, direcaoPersonagem &, int &, int &, int &, MAPA &, int&, sf::Clock &);
     void anda_pelos_vertices(sf::RenderWindow&, const Graph&, sf::Sprite&, std::vector<sf::CircleShape>,
     std::vector<sf::Text> , std::vector<sf::VertexArray>, sf::Vector2f&);
 }
