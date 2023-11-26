@@ -215,7 +215,8 @@ void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& c
             int nextVertex = caminho[i];
 
             // Verifica se o próximo vértice é o destino
-            if (nextVertex == destino) {
+            if (currentVertex == destino) {
+                sf::sleep(sf::milliseconds(1000));
                 std::cout << "Chegou ao destino!" << std::endl;
                 return;
             }

@@ -23,7 +23,7 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
         vertices[i].setOrigin(vertices[i].getRadius(), vertices[i].getRadius());
         vertices[i].setPosition(g.verticesInfo[i].position);
 
-        labels[i].setString(std::to_string(i));
+        labels[i].setString(std::to_string(i+1));
         labels[i].setFont(font);
         labels[i].setCharacterSize(15);
         labels[i].setPosition(g.verticesInfo[i].position.x - 30, g.verticesInfo[i].position.y - 40);
