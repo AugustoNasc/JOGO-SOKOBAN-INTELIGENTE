@@ -70,6 +70,22 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
             window.draw(labels[i]);
         }
 
+        sf::Texture characterTexture;
+        // Carregue a textura do personagem
+        if (!characterTexture.loadFromFile("assets/mapa/adicionado mapa/Layer 2_sprite_1.png")) {
+            std::cerr << "Erro ao carregar a textura do personagem\n";
+            return;
+        }
+
+        sf::Sprite character(characterTexture);
+        character.setScale(1, 1);  // Ajuste conforme necessário
+
+        // Desenhe o personagem no vértice 0
+        sf::Vector2f characterPosition = g.verticesInfo[0].position;
+        character.setPosition(characterPosition - sf::Vector2f(25, 25));  // Ajuste conforme necessário
+        window.draw(character);
+
+
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -87,13 +103,15 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
                             std::cout << "Vértice " << i << " clicado!" << std::endl;
                             // Adicione aqui qualquer ação que deseja executar ao clicar no vértice
 
+                            mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition);
+
                             char endereco[50];
                             sprintf(endereco, "mapastxt/mapa%d.txt", i+1);
                             level=i+1;
                             FILE *arquivo = fopen(endereco, "rt");
                             fread(mapa.mapa, sizeof(char), 12*13, arquivo);
                             declarar_posicoes_de_encaixe(&mapa);
-                            atualiza_posicao_jogador(gX, gY, mapa);
+
                             currentScreen = GAMEPLAY;
                             //PlaySound(conseguiu);
                             //SetSoundVolume(conseguiu, 0.3);
@@ -162,14 +180,14 @@ void grafo_do_jogo(Graph& g){
     colocar_peso_aresta(g, 11, 12);
 }
 
-void desenha_grafo_nas_posicoes(Graph& g, sf::RenderWindow &window, MAPA & mapa, GameScreen &currentScreen, int &gX, int &gY, int& level){
+/* void desenha_grafo_nas_posicoes(Graph& g, sf::RenderWindow &window, MAPA & mapa, GameScreen &currentScreen, int &gX, int &gY, int& level){
     // Gere as posições aleatórias para os vértices
     std::vector<sf::Vector2f> vertexPositions;
     for (int i = 0; i < g.vertices; ++i) {
         vertexPositions.push_back(g.verticesInfo[i].position);
     }
     desenhaGrafo_e_direcionaMapa(g, window, mapa, currentScreen, gX, gY, level);
-}
+} */
 
 
 void colocar_peso_aresta(Graph& g, int i, int j){
@@ -179,6 +197,7 @@ void colocar_peso_aresta(Graph& g, int i, int j){
 }
 
 std::vector<int> dijkstra(const Graph& g, int source) {
+
     std::vector<int> dist(g.vertices, std::numeric_limits<int>::max());
     dist[source] = 0;
 

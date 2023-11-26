@@ -19,7 +19,7 @@ struct Graph {
 
 void desenhaGrafo_e_direcionaMapa(const Graph&, sf::RenderWindow &, MAPA &, GameScreen &,  int &, int &, int &level);
 void grafo_do_jogo(Graph&);
-void desenha_grafo_nas_posicoes(Graph&, sf::RenderWindow &, MAPA &, GameScreen &, int &, int &, int &level);
+//void desenha_grafo_nas_posicoes(Graph&, sf::RenderWindow &, MAPA &, GameScreen &, int &, int &, int &level);
 void colocar_peso_aresta(Graph&, int, int);
 std::vector<int> dijkstra(const Graph&, int);
 
