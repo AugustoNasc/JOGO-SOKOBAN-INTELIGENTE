@@ -61,7 +61,7 @@ int main()
     arquivo = fopen(endereco, "rt");
     fread(mapa.mapa, sizeof(char), 12*13, arquivo);
     declarar_posicoes_de_encaixe(&mapa);
-    atualiza_posicao_jogador(gX, gY, mapa);
+    mv::atualiza_posicao_jogador(gX, gY, mapa);
 
     mapa_declarar_imagens_usadas(&imagens);
     mapa_background_fundo(&fundo);
@@ -76,28 +76,28 @@ int main()
         window.clear();
         switch (currentScreen) {
             case TITLE: {
-                titulo(window, currentScreen, clock);
+                tl::titulo(window, currentScreen, clock);
             }
             
             break;
 
             case MENU: {
-                Menu(window, currentScreen, clock);
+                tl::Menu(window, currentScreen, clock);
             }
             break;
 
             case MANUAL1: {
-                Manual(window, 1, currentScreen, clock);
+                tl::Manual(window, 1, currentScreen, clock);
             }
             break;
 
             case MANUAL2:{
-                Manual(window, 2, currentScreen, clock);
+                tl::Manual(window, 2, currentScreen, clock);
             }
             break;
 
             case CREDITO:{
-                Creditos(window, currentScreen, clock);
+                tl::Creditos(window, currentScreen, clock);
             }
             break;
 
@@ -107,66 +107,8 @@ int main()
 
                 grafo_do_jogo(g);
 
-                desenha_grafo_nas_posicoes(g, window, mapa, currentScreen, gX, gY, level);
-                /* int maximo = ultimo_nivel_desbloqueado();
-
-                sf::Texture texture;
-                if (!texture.loadFromFile("assets/fundo.png"))
-                {
-                    // erro...
-                }
-                sf::Sprite sprite(texture);
-                sprite.setTextureRect(sf::IntRect(0, 0, 600, 600));
-                sprite.setPosition(0, 0);
-
-                sf::Vector2i posicaoMouse = sf::Mouse::getPosition();
-                double p = sf::VideoMode::getDesktopMode().width / 600.0;
-                sf::Mouse::setPosition(sf::Vector2i(posicaoMouse.x / p, posicaoMouse.y / p));
-
-                sf::RectangleShape mouse(sf::Vector2f(6, 6));
-                mouse.setPosition((float)posicaoMouse.x, (float)posicaoMouse.y);
-
-                std::vector<sf::RectangleShape> botaoNivel(maximo);
-                for(int i = 0; i < maximo; i++)
-                {
-                    botaoNivel[i].setPosition(280, 80 + 35 * (i + 1));
-                    botaoNivel[i].setSize(sf::Vector2f(50, 20));
-                }
-
-                for(int i = 0; i < maximo; i++)
-                {
-                    if(botaoNivel[i].getGlobalBounds().contains(mouse.getPosition()))
-                    {
-                        char endereco[50];
-                        sprintf(endereco, "%d", i + 1);
-                        // DrawText(endereco, 300, 90 + 40 * (i + 1), 20, sf::Color::Black);
-
-                        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                        {
-                            int level = i + 1;
-                            // mapa = mapa_rezetar(level);
-                            // atualiza_posicao_jogador(gX, gY, mapa);
-                            // declarar_posicoes_de_encaixe(&mapa);
-                            // currentScreen = GAMEPLAY;
-                        }
-                    }
-
-                    sf::RectangleShape botaoNivel2(sf::Vector2f(200, 50));
-                    botaoNivel2.setPosition(400, 550);
-
-                    if(botaoNivel2.getGlobalBounds().contains(mouse.getPosition()))
-                    {
-                        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                        {
-                            // currentScreen = TITLE;
-                        }
-                    }
-                }
-
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-                {
-                    // currentScreen = TITLE;
-                } */
+                desenhaGrafo_e_direcionaMapa(g, window, mapa, currentScreen, gX, gY, level);
+                
             }
             break;
 
@@ -187,26 +129,29 @@ int main()
                 botaoNivel.setPosition(200, 500);
                 botaoNivel.setSize(sf::Vector2f(200, 60));
 
-                legenda_gameplay(window, currentScreen, clock);
+                tl::legenda_gameplay(window, currentScreen, clock);
 
                 // Verificar a colisão
-                if (botaoNivel.getGlobalBounds().intersects(mouse.getGlobalBounds())) {
+                sf::Time elapsed = clock.getElapsedTime();
+                if (botaoNivel.getGlobalBounds().intersects(mouse.getGlobalBounds())&& elapsed.asSeconds() >= 1.0f) {
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                         // Ação quando o botão esquerdo do mouse é liberado
-                        currentScreen = MENU;
+                        currentScreen = MANUAL2;
                     }
+                    clock.restart();
                 }
+                else{
+                    sf::Event event;
+                    while (window.pollEvent(event)) {
+                        if (event.type == sf::Event::Closed)
+                        window.close();
 
-                sf::Event event;
-                while (window.pollEvent(event)) {
-                    if (event.type == sf::Event::Closed)
-                    window.close();
+                        if(event.type == sf::Event::KeyPressed){
+                        
+                            mv::atualiza_posicao_jogador(gX, gY, mapa);
+                            mv::comando_por_tecla(event, sentido, voltando, gX, gY, mapa, level, clock);
 
-                    if(event.type == sf::Event::KeyPressed){
-                    
-                        atualiza_posicao_jogador(gX, gY, mapa);
-                        comando_por_tecla(event, sentido, voltando, gX, gY, mapa, level, clock);
-
+                        }
                     }
                 }
             }
@@ -290,7 +235,7 @@ int main()
                 declarar_posicoes_de_encaixe(&mapa);
             //PlaySound(conseguiu);
             //SetSoundVolume(conseguiu, 0.3);
-            atualiza_posicao_jogador(gX, gY, mapa);
+            mv::atualiza_posicao_jogador(gX, gY, mapa);
             sentido=FRENTE;
     
                 //PlayMusicStream(jogando);
