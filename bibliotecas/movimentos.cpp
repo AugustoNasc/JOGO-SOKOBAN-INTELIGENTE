@@ -210,7 +210,7 @@ void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& c
         std::vector<int> caminho = menorCaminho(g, source, destino);
         float speed = 200.0f;
 
-        for (int i = 1; i < caminho.size(); ++i) {
+        for (std::size_t i = 1; i < caminho.size(); ++i) {
             int currentVertex = caminho[i - 1];
             int nextVertex = caminho[i];
 
@@ -263,7 +263,7 @@ void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& c
                 window.draw(character);
                 window.display();
 
-                sf::sleep(sf::milliseconds(20));  // Introduce a delay for smooth movement
+                sf::sleep(sf::milliseconds(20));
 
                 sf::Event event;
                 while (window.pollEvent(event)) {

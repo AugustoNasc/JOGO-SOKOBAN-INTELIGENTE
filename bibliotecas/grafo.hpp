@@ -17,9 +17,8 @@ struct Graph {
     std::vector<Vertex> verticesInfo;
 };
 
-void desenhaGrafo_e_direcionaMapa(const Graph&, sf::RenderWindow &, MAPA &, GameScreen &,  int &, int &, int &level);
+void desenhaGrafo_e_direcionaMapa(const Graph&, sf::RenderWindow &, MAPA &, GameScreen &,  int &, int &, int &);
 void grafo_do_jogo(Graph&);
-//void desenha_grafo_nas_posicoes(Graph&, sf::RenderWindow &, MAPA &, GameScreen &, int &, int &, int &level);
 void colocar_peso_aresta(Graph&, int, int);
 std::vector<int> menorCaminho(const Graph&, int, int);
 

@@ -1,14 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "mapa.hpp"
+#include "bibliotecas/mapa.hpp"
 #include <string>
 #include <string.h>
 #include <iostream>
-#include "movimentos.hpp"
-#include "voltajogada.hpp"
-#include "guarda_nivel.hpp"
-#include "tela.hpp"
-#include "grafo.hpp"
+#include "bibliotecas/movimentos.hpp"
+#include "bibliotecas/voltajogada.hpp"
+#include "bibliotecas/guarda_nivel.hpp"
+#include "bibliotecas/tela.hpp"
+#include "bibliotecas/grafo.hpp"
 
 #define QTD_QUADRADOS 12 
 #define LARGURA 600
@@ -30,15 +30,13 @@ int main()
     sf::Sound conseguiu;
 
     direcaoPersonagem sentido = FRENTE;
-    int level=1, maximo=1, Ultimo=0;
+    int level=1;
 
     Quadrado *imagens;
     imagens = new Quadrado[6];
 
     Quadrado *fundo;
     fundo = new Quadrado[13];
-
-    sf::Vector2i posicaoMouse = sf::Mouse::getPosition();
 
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("assets/fundo.png"))
@@ -149,51 +147,7 @@ int main()
             break;
 
             case PARABENS:{
-                window.draw(backgroundSprite);
-
-                // Desenhar elementos específicos da tela de parabéns
-                
-                    sf::Font font;
-                    if (!font.loadFromFile("font.ttf"))
-                        return -1;
-
-                    sf::Text congratulationsText("PARABÉNS!!", font, 55);
-                    congratulationsText.setFillColor(sf::Color::White);
-                    congratulationsText.setPosition(120, 170);
-
-                    window.draw(congratulationsText);
-                
-
-                if (!Ultimo) {
-                    sf::RectangleShape continueButton(sf::Vector2f(260, 40));
-                    sf::Color lightGray(211, 211, 211);
-                    continueButton.setFillColor(lightGray);
-
-                    continueButton.setPosition(173, 300);
-
-                    window.draw(continueButton);
-
-                    sf::Text continueText("CONTINUAR [ENTER]", font, 20);
-                    continueText.setFillColor(sf::Color::Black);
-                    continueText.setPosition(198, 312);
-
-                    window.draw(continueText);
-                }
-
-                {
-                    sf::RectangleShape menuButton(sf::Vector2f(260, 40));
-                    sf::Color lightGray(211, 211, 211);
-                    menuButton.setFillColor(lightGray);
-                    menuButton.setPosition(172, 360);
-
-                    window.draw(menuButton);
-
-                    sf::Text menuText("MENU PRINCIPAL [Q]", font, 20);
-                    menuText.setFillColor(sf::Color::Black);
-                    menuText.setPosition(202, 372);
-
-                    window.draw(menuText);
-                }
+               
 
             }
             break;
@@ -201,9 +155,6 @@ int main()
             default:
             break;
         }
-
-        //window.display();
-        //window.clear(sf::Color::White);
 
         window.display();
 
@@ -213,23 +164,18 @@ int main()
             vtj::apagar_jogadas(level);
             if(level!=13){
                 level++;
-                Ultimo=0;
             }
             else{
                 level=1;
-                Ultimo=1;
             }
                 salvar_nivel(level);
                 sprintf(endereco, "mapastxt/mapa%d.txt", level);
                 arquivo = fopen(endereco, "rt");
                 fread(mapa.mapa, sizeof(char), 12*13, arquivo);
                 declarar_posicoes_de_encaixe(&mapa);
-            //PlaySound(conseguiu);
-            //SetSoundVolume(conseguiu, 0.3);
             mv::atualiza_posicao_jogador(gX, gY, mapa);
             sentido=FRENTE;
     
-                //PlayMusicStream(jogando);
     }
 
         

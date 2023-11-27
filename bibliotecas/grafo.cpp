@@ -104,7 +104,7 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
                             // Adicione aqui qualquer ação que deseja executar ao clicar no vértice
 
                             int destino = i;
-                            mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition, 0,i);
+                            mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition, 0, destino);
 
                             char endereco[50];
                             sprintf(endereco, "mapastxt/mapa%d.txt", i+1);
@@ -114,8 +114,6 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
                             declarar_posicoes_de_encaixe(&mapa);
 
                             currentScreen = GAMEPLAY;
-                            //PlaySound(conseguiu);
-                            //SetSoundVolume(conseguiu, 0.3);
                             //atualiza_posicao_jogador(gX, gY, mapa);
                             //sentido=FRENTE;
                         }
