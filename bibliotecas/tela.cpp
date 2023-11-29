@@ -90,30 +90,40 @@ namespace tl{
 
             sf::Time elapsed = clock.getElapsedTime();
                 for(int i=0; i<4; i++){
-                    if(mouse.getGlobalBounds().intersects(botaoNivel[i].getGlobalBounds()) && elapsed.asSeconds() >= 1.0f){
-                        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+                    window.draw(botaoNivel[i]);
+                }
 
-                            clock.restart();
-                            if(i==0)
-                                currentScreen = GAMEPLAY;
-                            if(i==1)
-                                currentScreen = MANUAL1;
-                            if(i==2)
-                                currentScreen = CREDITO;
-                            if(i==3)
-                                currentScreen = ESCOLHER_NIVEL;
-
-
+                sf::Event event;
+                while (window.pollEvent(event)) {
+                    if (event.type == sf::Event::Closed)
+                        window.close();
+                }
+                
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    if (event.mouseButton.button == sf::Mouse::Left) {
+                        posicaoMouse = sf::Mouse::getPosition(window);
+                        scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
+                        mouse.setPosition(scaledMousePosition);
+                        for (int i = 0; i < 4; i++) {
+                            if(mouse.getGlobalBounds().intersects(botaoNivel[i].getGlobalBounds()) && elapsed.asSeconds() >= 1.0f){
+                                    clock.restart();
+                                    if(i==0)
+                                        currentScreen = GAMEPLAY;
+                                    if(i==1)
+                                        currentScreen = MANUAL1;
+                                    if(i==2)
+                                        currentScreen = CREDITO;
+                                    if(i==3)
+                                        currentScreen = ESCOLHER_NIVEL;
+                            }
                         }
                     }
-                    window.draw(botaoNivel[i]);
-                
-                window.draw(mouse);
-                window.display();
                 }
+                //window.draw(mouse);
+                window.display();
     }
 
-    void tela_manual(sf::RenderWindow &window){
+    void tela_manual(sf::RenderWindow &window, int i){
         sf::RectangleShape button;
         button.setSize(sf::Vector2f(220, 40));
         button.setFillColor(sf::Color(211,211,211));
@@ -162,20 +172,43 @@ namespace tl{
         window.draw(text);
 
         text.setString("[C] - DESFAZER VOLTA DE JOGADA");
-        text.setPosition(115, 370);
+        text.setPosition(160, 370);
         window.draw(text);
 
         text.setString("[X] - RESETAR NÍVEL");
         text.setPosition(195, 405);
         window.draw(text);
 
-        button.setPosition(205, 492);
-        button.setSize(sf::Vector2f(190, 35));
-        window.draw(button);
-        text.setString("VOLTAR");
-        text.setPosition(245, 500);
-        text.setFillColor(sf::Color::Black);
-        window.draw(text);
+
+        if(i==1){
+            button.setPosition(205, 492);
+            button.setSize(sf::Vector2f(190, 35));
+            window.draw(button);
+
+            text.setString("VOLTAR");
+            text.setPosition(245, 500);
+            text.setFillColor(sf::Color::Black);
+            window.draw(text);
+        }
+        else if(i==2){
+            button.setPosition(200, 442);
+            button.setSize(sf::Vector2f(220, 35));
+            window.draw(button);
+
+            text.setString("VOLTAR PARA O JOGO");
+            text.setPosition(215, 450);
+            text.setFillColor(sf::Color::Black);
+            window.draw(text);
+
+            button.setPosition(190, 492);
+            button.setSize(sf::Vector2f(260, 35));
+            window.draw(button);
+
+            text.setString("VOLTAR PARA O MENU INICIAL");
+            text.setPosition(210, 500);
+            text.setFillColor(sf::Color::Black);
+            window.draw(text);
+        }
 
         text.setString("Para sair do jogo pressione ESC");
         text.setPosition(161, 550);
@@ -198,105 +231,56 @@ namespace tl{
                     sf::RectangleShape mouse(sf::Vector2f(15, 15));
                     mouse.setPosition(scaledMousePosition);
 
-                    sf::RectangleShape buttonBounds;
-                    buttonBounds.setPosition(200, 500);
-                    buttonBounds.setSize(sf::Vector2f(200, 60));
-                    buttonBounds.setFillColor(sf::Color::Transparent);
+                    sf::RectangleShape PrimeiroBotao;
+                    PrimeiroBotao.setPosition(200, 500);
+                    PrimeiroBotao.setSize(sf::Vector2f(200, 60));
+                    PrimeiroBotao.setFillColor(sf::Color::Transparent);
+
+                    sf::RectangleShape SegundoBotao;
+                    SegundoBotao.setPosition(200, 450);
+                    SegundoBotao.setSize(sf::Vector2f(200, 60));
+                    SegundoBotao.setFillColor(sf::Color::Transparent);
 
                     window.draw(background);
-                    tela_manual(window);
+                    tela_manual(window, i);
 
-                    if (mouse.getGlobalBounds().intersects(buttonBounds.getGlobalBounds())) {
+                    sf::Event event;
+                    while (window.pollEvent(event)) {
+                        if (event.type == sf::Event::Closed)
+                            window.close();
+                    }
+                    
+                    if (event.type == sf::Event::MouseButtonPressed) {
+                        if (event.mouseButton.button == sf::Mouse::Left) {
                         sf::Time elapsed = clock.getElapsedTime();
-                        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                            if(i==1 && currentScreen == MANUAL1 && elapsed.asSeconds() >= 1.0f){
-                                currentScreen = TITLE;
-                                clock.restart();
-                            }
-                            else if(i==2 && currentScreen == MANUAL2 && elapsed.asSeconds() >= 1.0f)
-                                currentScreen = GAMEPLAY;
-                                clock.restart();
-                        }
-                    }
-                    window.draw(buttonBounds);
-                    window.draw(mouse);
-                    window.display();
-    }
-
-    void Menu(sf::RenderWindow &window, GameScreen &currentScreen, sf::Clock &clock){
-                    sf::Texture backgroundTexture;
-                    if (!backgroundTexture.loadFromFile("assets/fundo.png"))
-                    {
-                        // erro...
-                    }
-
-                    sf::Sprite background(backgroundTexture);
-                    background.setScale((float)window.getSize().x / 600, (float)window.getSize().y / 600);
-
-                    sf::Vector2i posicaoMouse = sf::Mouse::getPosition();
-                    sf::RectangleShape mouse(sf::Vector2f(15, 15));
-                    mouse.setPosition((float)posicaoMouse.x, (float)posicaoMouse.y);
-
-                    sf::RectangleShape botaoNivel[3];
-
-                    for(int i=0; i<3; i++){
-                        botaoNivel[i].setPosition(200, 322+60*i);
-                        botaoNivel[i].setSize(sf::Vector2f(200, 60));
-                    }
-
-                    while (window.isOpen())
-                    {
-                        sf::Event event;
-                        while (window.pollEvent(event))
-                        {
-                            if (event.type == sf::Event::Closed)
-                                window.close();
-
-                            if (event.type == sf::Event::MouseButtonReleased)
-                            {
-                                if(event.mouseButton.button == sf::Mouse::Left)
-                                {
-                                    sf::Time elapsed = clock.getElapsedTime();
-                                    for(int i=0; i<3; i++){
-                                        if(botaoNivel[i].getGlobalBounds().intersects(mouse.getGlobalBounds())&& elapsed.asSeconds() >= 1.0f){
-                                            if(i==0)
-                                                currentScreen = GAMEPLAY;
-                                            if(i==1)
-                                                currentScreen = MANUAL2;
-                                            if(i==2)
-                                                currentScreen = TITLE;
-
-                                            clock.restart();
-                                        }
+                            posicaoMouse = sf::Mouse::getPosition(window);
+                            scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
+                            mouse.setPosition(scaledMousePosition);
+                            if (mouse.getGlobalBounds().intersects(PrimeiroBotao.getGlobalBounds())) {
+                                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                                    if(elapsed.asSeconds() >= 0.5f){
+                                        currentScreen = TITLE;
+                                        clock.restart();
                                     }
                                 }
                             }
-
-                            if (event.type == sf::Event::KeyPressed)
-                            {
-                                if (event.key.code == sf::Keyboard::Enter)
-                                {
-                                    currentScreen = GAMEPLAY;
+                            else if(i==2){
+                                if (mouse.getGlobalBounds().intersects(SegundoBotao.getGlobalBounds())) {
+                                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                                    if(elapsed.asSeconds() >= 0.5f){
+                                        currentScreen = GAMEPLAY;
+                                        clock.restart();
+                                    }
                                 }
-
-                                if (event.key.code == sf::Keyboard::I)
-                                {
-                                    currentScreen = MANUAL2;
-                                }
-
-                                if (event.key.code == sf::Keyboard::Q)
-                                {
-                                    currentScreen = TITLE;
-                                }
-
-                                clock.restart();
+                            }
                             }
                         }
-
-                        window.clear();
-                        window.draw(background);
-                        window.display();
                     }
+                    window.draw(PrimeiroBotao);
+                    if(i==2)
+                        window.draw(SegundoBotao);
+                    //window.draw(mouse);
+                    window.display();
     }
 
     void tela_creditos(sf::RenderWindow &window){
@@ -324,15 +308,15 @@ namespace tl{
         text.setCharacterSize(20);
         text.setFillColor(sf::Color::White);
         text.setString("AUGUSTO NASCIMENTO (AMBULANCIA)");
-        text.setPosition(248, 160);
+        text.setPosition(200, 160);
         window.draw(text);
 
         text.setString("PAULO VITOR (FRIGOBAR)");
-        text.setPosition(225, 195);
+        text.setPosition(220, 195);
         window.draw(text);
 
         text.setString("EMANUEL ALARCON (ISCO)");
-        text.setPosition(245, 230);
+        text.setPosition(225, 230);
         window.draw(text);
 
         button.setPosition(205, 492);
@@ -372,15 +356,29 @@ namespace tl{
                     window.draw(background);
                     tela_creditos(window);
 
-                    if (mouse.getGlobalBounds().intersects(botaoNivel.getGlobalBounds())) {
+                    sf::Event event;
+                    while (window.pollEvent(event)) {
+                        if (event.type == sf::Event::Closed)
+                            window.close();
+                    }
+                    
+                    if (event.type == sf::Event::MouseButtonPressed) {
+                        if (event.mouseButton.button == sf::Mouse::Left) {
                         sf::Time elapsed = clock.getElapsedTime();
-                        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && currentScreen == CREDITO && elapsed.asSeconds() >= 1.0f) {
-                                currentScreen = TITLE;
-                                clock.restart();
+                            posicaoMouse = sf::Mouse::getPosition(window);
+                            scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
+                            mouse.setPosition(scaledMousePosition);
+                            if (mouse.getGlobalBounds().intersects(botaoNivel.getGlobalBounds())) {
+                                sf::Time elapsed = clock.getElapsedTime();
+                                if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && currentScreen == CREDITO && elapsed.asSeconds() >= 1.0f) {
+                                        currentScreen = TITLE;
+                                        clock.restart();
+                                }
+                            }
                         }
                     }
                     window.draw(botaoNivel);
-                    window.draw(mouse);
+                    //window.draw(mouse);
                     window.display();
     }
 

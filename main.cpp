@@ -70,11 +70,6 @@ int main()
             
             break;
 
-            case MENU: {
-                tl::Menu(window, currentScreen, clock);
-            }
-            break;
-
             case MANUAL1: {
                 tl::Manual(window, 1, currentScreen, clock);
             }
