@@ -175,7 +175,7 @@ namespace tl{
         text.setPosition(160, 370);
         window.draw(text);
 
-        text.setString("[X] - RESETAR NÍVEL");
+        text.setString("[X] - RESETAR NÍIEL");
         text.setPosition(195, 405);
         window.draw(text);
 

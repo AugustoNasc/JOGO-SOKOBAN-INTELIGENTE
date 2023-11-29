@@ -55,6 +55,9 @@ int main()
     mapa_declarar_imagens_usadas(&imagens);
     mapa_background_fundo(&fundo);
 
+    bool mapas_acessados[13];
+    atualiza_mapas_acessados(mapas_acessados);
+
     int voltando=0;
     window.setFramerateLimit(144);
     sf::Clock clock; //marcar tempo, para não clicar instantaneamente assim que se troca de tela
@@ -91,7 +94,7 @@ int main()
 
                 grafo_do_jogo(g);
 
-                desenhaGrafo_e_direcionaMapa(g, window, mapa, currentScreen, gX, gY, level);
+                desenhaGrafo_e_direcionaMapa(g, window, mapa, currentScreen, gX, gY, level, mapas_acessados);
                 
             }
             break;

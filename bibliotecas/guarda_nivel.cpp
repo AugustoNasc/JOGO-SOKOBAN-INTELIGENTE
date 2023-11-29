@@ -30,3 +30,17 @@ int ultimo_nivel_desbloqueado(void){
 
     return level;
 }
+
+void atualiza_mapas_acessados(bool mapas[]){
+    int level;
+    FILE *arq = fopen("jogadas/niveis_salvos.txt", "rt");
+
+    for(int i=0; i<12; i++){
+        mapas[i]=false;
+    }
+    while(fscanf(arq, "%d", &level) != EOF){
+        mapas[level-1]=true;
+    }
+    fclose(arq);
+
+}

@@ -5,7 +5,7 @@
 #include <iostream>
 #include "movimentos.hpp"
 
-void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA &mapa, GameScreen &currentScreen, int &gX, int &gY, int &level) {
+void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA &mapa, GameScreen &currentScreen, int &gX, int &gY, int &level, bool mapa_acessado[]) {
 
     std::vector<sf::CircleShape> vertices(g.vertices);
     std::vector<sf::Text> labels(g.vertices);
@@ -19,7 +19,7 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
 
     for (int i = 0; i < g.vertices; ++i) {
         vertices[i].setRadius(30);
-        vertices[i].setFillColor(sf::Color::Blue);
+        mapa_acessado[i] ? vertices[i].setFillColor(sf::Color::Green) : vertices[i].setFillColor(sf::Color::Blue);
         vertices[i].setOrigin(vertices[i].getRadius(), vertices[i].getRadius());
         vertices[i].setPosition(g.verticesInfo[i].position);
 
