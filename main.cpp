@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "jogo.hpp"
+#include "bibliotecas/voltajogada.hpp"
 
 #define QTD_QUADRADOS 12 
 #define LARGURA 600
@@ -48,6 +49,8 @@ int main()
     window.setFramerateLimit(144);
     sf::Clock clock; //marcar tempo, para não clicar instantaneamente assim que se troca de tela
 
+    int forca=3; //vai até o ivel 3
+
     
     if(ha_jogo_salvo()){
         tl::jogo_salvo(window);
@@ -72,14 +75,15 @@ int main()
                         fclose(file);
                     }
                     atualiza_niveis_acessados(mapas_acessados);
+                    vtj::apagar_jogadas(level);
                     while(window.isOpen())
-                        carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem);
+                        carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem, forca);
                 }
                 else if (continueEvent.key.code == sf::Keyboard::S)
                 {
                     verticeAtualPersonagem=ultimo_nivel_desbloqueado()-1;
                     while(window.isOpen())
-                        carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem);
+                        carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem, forca);
                 }
                 break;
             }
@@ -90,7 +94,7 @@ int main()
     }
     else{
         while(window.isOpen())
-            carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem);
+            carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem, forca);
     }
 
 
