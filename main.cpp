@@ -82,6 +82,13 @@ int main()
                 else if (continueEvent.key.code == sf::Keyboard::S)
                 {
                     verticeAtualPersonagem=ultimo_nivel_desbloqueado()-1;
+                    if(verticeAtualPersonagem+1<=6 && verticeAtualPersonagem+1>=4) forca=6;
+                    else if(verticeAtualPersonagem+1<=9 && verticeAtualPersonagem+1>=7) forca=9;
+                    else if(verticeAtualPersonagem+1<=11 && verticeAtualPersonagem+1>=9) forca=11;
+                    else if(verticeAtualPersonagem+1<=13 && verticeAtualPersonagem+1>=12) forca=13;
+
+                    std::cout<<forca<<std::endl;
+
                     while(window.isOpen())
                         carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem, forca);
                 }
