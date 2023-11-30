@@ -31,34 +31,54 @@ namespace mv{
                 }
     }
 
-    void empurra_caixa(int &x, int &y, int cont1, int cont2, MAPA &mapa, int level){
+    void empurra_caixa(int &x, int &y, int cont1, int cont2, MAPA &mapa, int level, int forca, sf::RenderWindow &window){
 
     if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12){
 
             if((mapa).mapa[y+cont2][x+cont1] == 'B'){
+                if(forca>=level){
+                    if ((mapa).mapa[y+2*cont2][x+2*cont1] == '@'||(mapa).mapa[y+2*cont2][x+2*cont1] == '+'){
+                            if((mapa).especial_atual[y+2*cont2][x+2*cont1]==1){
+                                (mapa).especial_atual[y+2*cont2][x+2*cont1]=0;
+                            }
+                            if((mapa).especial_atual[y+cont2][x+cont1]==0){
+                                if((mapa).especial_inicio[y+cont2][x+cont1]==1){
+                                (mapa).especial_atual[y+cont2][x+cont1]=1;}
+                            }
+                            (mapa).mapa[y+2*cont2][x+2*cont1]='B';
+                            (mapa).mapa[y+cont2][x+cont1]='P';
+                            (mapa).mapa[y][x]= '@';
+                            y=y+cont2;
+                            x=x+cont1;  
+                            vtj::registrando_jogadas(mapa, level);
 
-                if ((mapa).mapa[y+2*cont2][x+2*cont1] == '@'||(mapa).mapa[y+2*cont2][x+2*cont1] == '+'){
-                        if((mapa).especial_atual[y+2*cont2][x+2*cont1]==1){
-                            (mapa).especial_atual[y+2*cont2][x+2*cont1]=0;
-                        }
-                        if((mapa).especial_atual[y+cont2][x+cont1]==0){
-                            if((mapa).especial_inicio[y+cont2][x+cont1]==1){
-                            (mapa).especial_atual[y+cont2][x+cont1]=1;}
-                        }
-                        (mapa).mapa[y+2*cont2][x+2*cont1]='B';
-                        (mapa).mapa[y+cont2][x+cont1]='P';
-                        (mapa).mapa[y][x]= '@';
-                        y=y+cont2;
-                        x=x+cont1;  
-                        vtj::registrando_jogadas(mapa, level);
+                    }
+                }
+                else{
+                    std::cout<<"teste"<<std::endl;
+                    sf::Font font;\
+                    if (!font.loadFromFile("assets/arial_narrow_7.ttf"))
+                    {
+                        //erro...
+                    }
+                    sf::Text text("Voce ainda eh fraco demais\nFaca os niveis azuis anteriores", font);
+                    text.setCharacterSize(20);
+                    text.setFillColor(sf::Color::Red);
+                    text.setPosition(5, 50);
 
+                    sf::Clock clock;
+                    while (clock.getElapsedTime().asSeconds() <= 5.0f)
+                    {
+                        window.draw(text);
+                        window.display();
+                    }
                 }
             }
     }
 
     }
 
-    void mover_personagem(int &x,int &y,direcaoPersonagem &sentido, MAPA &mapa, int level, sf::Clock &clock){
+    void mover_personagem(int &x,int &y,direcaoPersonagem &sentido, MAPA &mapa, int level, sf::Clock &clock, int forca, sf::RenderWindow &window){
         sf::Time elapsed = clock.getElapsedTime();
         if((mapa).mapa[y][x]=='P'&& elapsed.asSeconds() >= 0.01f){
 
@@ -71,7 +91,7 @@ namespace mv{
             empurra_vazio(mapa, x, y, cont1, cont2, level, ja_andou);}
 
         if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12 && !ja_andou){
-            empurra_caixa(x, y, cont1, cont2, mapa, level);}
+            empurra_caixa(x, y, cont1, cont2, mapa, level, forca, window);}
 
 
         }
@@ -83,7 +103,7 @@ namespace mv{
             empurra_vazio(mapa, x, y, cont1, cont2, level, ja_andou);}
 
         if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12&& !ja_andou){
-            empurra_caixa(x, y, cont1, cont2, mapa, level); }
+            empurra_caixa(x, y, cont1, cont2, mapa, level, forca, window); }
 
 
         }
@@ -94,7 +114,7 @@ namespace mv{
             empurra_vazio(mapa, x, y, cont1, cont2, level, ja_andou); }
 
         if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12&& !ja_andou){
-            empurra_caixa(x, y, cont1, cont2, mapa, level);}
+            empurra_caixa(x, y, cont1, cont2, mapa, level, forca, window);}
 
 
         }
@@ -106,7 +126,7 @@ namespace mv{
             empurra_vazio(mapa, x, y, cont1, cont2, level, ja_andou); }
 
         if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12&& !ja_andou){
-            empurra_caixa(x, y, cont1, cont2, mapa, level);}
+            empurra_caixa(x, y, cont1, cont2, mapa, level, forca, window);}
 
 
         }
@@ -114,32 +134,32 @@ namespace mv{
         }
     }
 
-    void comando_por_tecla(sf::Event event, direcaoPersonagem& sentido, int &voltando, int &gX, int &gY, MAPA &mapa, int &level, sf::Clock &clock){
+    void comando_por_tecla(sf::Event event, direcaoPersonagem& sentido, int &voltando, int &gX, int &gY, MAPA &mapa, int &level, sf::Clock &clock, int &forca, sf::RenderWindow &window){
                         char endereco[50];
                         FILE *arquivo;
 
                         if((event.key.code==sf::Keyboard::A)||(event.key.code==sf::Keyboard::Left)){ 
                             sentido=ESQUERDA; 
                             voltando=0;
-                            mover_personagem(gX, gY, sentido, mapa, level, clock);
+                            mover_personagem(gX, gY, sentido, mapa, level, clock, forca, window);
                         }
 
                         else if((event.key.code==sf::Keyboard::D)||(event.key.code==sf::Keyboard::Right)){ 
                             sentido=DIREITA;
                             voltando=0;
-                            mover_personagem(gX, gY, sentido, mapa, level, clock);
+                            mover_personagem(gX, gY, sentido, mapa, level, clock, forca, window);
                         }
 
                         else if((event.key.code==sf::Keyboard::S)||(event.key.code==sf::Keyboard::Down)){ 
                             sentido=BAIXO;
                             voltando=0;
-                            mover_personagem(gX, gY, sentido, mapa, level, clock);
+                            mover_personagem(gX, gY, sentido, mapa, level, clock, forca, window);
                         }
 
                         else if((event.key.code==sf::Keyboard::W)||(event.key.code==sf::Keyboard::Up)){ 
                             sentido=CIMA; 
                             voltando=0;
-                            mover_personagem(gX, gY, sentido, mapa, level, clock);
+                            mover_personagem(gX, gY, sentido, mapa, level, clock, forca, window);
                         }
 
                         else if((event.key.code==sf::Keyboard::Z)){ 
@@ -172,6 +192,7 @@ namespace mv{
                         else if((event.key.code==sf::Keyboard::P)&&level!=13){ 
                             vtj::apagar_jogadas(level);
                             level++;
+                            forca=level;
 
                             sprintf(endereco, "mapastxt/mapa%d.txt", level);
 

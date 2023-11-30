@@ -7,7 +7,7 @@
 #include "guarda_nivel.hpp"
 
 void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA &mapa, GameScreen &currentScreen,
-                                 int &gX, int &gY, int &level, bool mapa_acessado[], int *verticeAtualPersonagem) {
+                                 int &gX, int &gY, int &level, bool mapa_acessado[], int *verticeAtualPersonagem, int forca) {
 
     std::vector<sf::CircleShape> vertices(g.vertices);
     std::vector<sf::Text> labels(g.vertices);
@@ -22,7 +22,9 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
 
     for (int i = 0; i < g.vertices; ++i) {
         vertices[i].setRadius(30);
-        mapa_acessado[i] ? vertices[i].setFillColor(sf::Color::Green) : vertices[i].setFillColor(sf::Color::Blue);
+        if(mapa_acessado[i]) vertices[i].setFillColor(sf::Color::Green) ;
+        else if(forca<i+1) vertices[i].setFillColor(sf::Color::Red);
+        else vertices[i].setFillColor(sf::Color::Blue);
         vertices[i].setOrigin(vertices[i].getRadius(), vertices[i].getRadius());
         vertices[i].setPosition(g.verticesInfo[i].position);
 
