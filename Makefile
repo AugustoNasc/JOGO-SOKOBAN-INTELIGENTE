@@ -15,7 +15,7 @@ EXEC = Sokoban
 all: $(EXEC)
 
 # Regra para o arquivo executável
-$(EXEC): main.o mapa.o movimentos.o voltajogada.o guarda_nivel.o tela.o grafo.o
+$(EXEC): main.o jogo.o mapa.o movimentos.o voltajogada.o guarda_nivel.o tela.o grafo.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(SFML_LIB)
 
 # Regra para o arquivo objeto da main
