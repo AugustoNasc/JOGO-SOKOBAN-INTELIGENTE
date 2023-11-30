@@ -1,7 +1,9 @@
 #ifndef TELA_HPP
 #define TELA_HPP
 
-typedef enum GameScreen { TITLE, MANUAL1, MANUAL2, ESCOLHER_NIVEL, CREDITO, GAMEPLAY, PARABENS } GameScreen;
+#include <string>
+
+typedef enum GameScreen { TITLE, MANUAL1, MANUAL2, ESCOLHER_NIVEL, CREDITO, GAMEPLAY } GameScreen;
 
 namespace tl{
     void jogo_salvo(sf::RenderWindow &);

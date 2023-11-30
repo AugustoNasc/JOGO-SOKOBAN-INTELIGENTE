@@ -18,7 +18,7 @@ namespace mv{
                 }
     }
 
-    void troca_vazio(MAPA &mapa, int &x, int &y, int cont1, int cont2, int level, int &ja_andou){
+    void empurra_vazio(MAPA &mapa, int &x, int &y, int cont1, int cont2, int level, int &ja_andou){
 
                 char aux;
                 if ((mapa).mapa[y+cont2][x+cont1] == '@'||(mapa).mapa[y+cont2][x+cont1] == '+'){
@@ -31,7 +31,7 @@ namespace mv{
                 }
     }
 
-    void troca_caixa(int &x, int &y, int cont1, int cont2, MAPA &mapa, int level){
+    void empurra_caixa(int &x, int &y, int cont1, int cont2, MAPA &mapa, int level){
 
     if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12){
 
@@ -68,10 +68,10 @@ namespace mv{
         {
         cont1=-1; cont2=0;
         if(x+cont1>=0 && x+cont1<12 && y+cont2>=0 && y+cont2<12){
-            troca_vazio(mapa, x, y, cont1, cont2, level, ja_andou);}
+            empurra_vazio(mapa, x, y, cont1, cont2, level, ja_andou);}
 
         if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12 && !ja_andou){
-            troca_caixa(x, y, cont1, cont2, mapa, level);}
+            empurra_caixa(x, y, cont1, cont2, mapa, level);}
 
 
         }
@@ -80,10 +80,10 @@ namespace mv{
         {
             cont1=1; cont2=0;
         if(x+cont1>=0 && x+cont1<12 && y+cont2>=0 && y+cont2<12){
-            troca_vazio(mapa, x, y, cont1, cont2, level, ja_andou);}
+            empurra_vazio(mapa, x, y, cont1, cont2, level, ja_andou);}
 
         if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12&& !ja_andou){
-            troca_caixa(x, y, cont1, cont2, mapa, level); }
+            empurra_caixa(x, y, cont1, cont2, mapa, level); }
 
 
         }
@@ -91,10 +91,10 @@ namespace mv{
         {
             cont1=0; cont2=1;
         if(x+cont1>=0 && x+cont1<12 && y+cont2>=0 && y+cont2<12){
-            troca_vazio(mapa, x, y, cont1, cont2, level, ja_andou); }
+            empurra_vazio(mapa, x, y, cont1, cont2, level, ja_andou); }
 
         if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12&& !ja_andou){
-            troca_caixa(x, y, cont1, cont2, mapa, level);}
+            empurra_caixa(x, y, cont1, cont2, mapa, level);}
 
 
         }
@@ -103,10 +103,10 @@ namespace mv{
         {
             cont1=0; cont2=-1;
         if(x+cont1>=0 && x+cont1<12 && y+cont2>=0 && y+cont2<12){
-            troca_vazio(mapa, x, y, cont1, cont2, level, ja_andou); }
+            empurra_vazio(mapa, x, y, cont1, cont2, level, ja_andou); }
 
         if(x+2*cont1>=0 && x+2*cont1<12 && y+2*cont2>=0 && y+2*cont2<12&& !ja_andou){
-            troca_caixa(x, y, cont1, cont2, mapa, level);}
+            empurra_caixa(x, y, cont1, cont2, mapa, level);}
 
 
         }
@@ -210,11 +210,6 @@ void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& c
 
                         std::vector<int> caminho = menorCaminho(g, *verticeAtualPersonagem, destino);
 
-                        for(auto u: caminho){
-                            std::cout<<u<<" ,, ";
-                        }
-                        std::cout<<std::endl;
-
                         float speed = 200.0f;
                         sf::Texture backgroundTexture;
                                 if (!backgroundTexture.loadFromFile("assets/fundo.png")){
@@ -276,8 +271,6 @@ void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& c
                             characterPosition = nextPos;
                         }
 
-                        // Imprime a mensagem ao chegar ao destino
-                        std::cout << "Chegou ao destino!" << std::endl;
 }
 
 

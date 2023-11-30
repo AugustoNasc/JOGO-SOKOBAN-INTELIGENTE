@@ -20,7 +20,7 @@ int main()
     int level=1;
 
     Quadrado *imagens;
-    imagens = new Quadrado[6];
+    imagens = new Quadrado[10];
 
     Quadrado *fundo;
     fundo = new Quadrado[13];

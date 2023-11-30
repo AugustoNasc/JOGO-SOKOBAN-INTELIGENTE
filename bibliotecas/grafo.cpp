@@ -104,8 +104,6 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
                                                   std::pow(mousePos.y - vertexPos.y, 2));
 
                         if (distance <= 50) {  // Raio do círculo (raio dos vértices)
-                            std::cout << "Vértice " << i << " clicado!" << std::endl;
-                            std::cout << "Vértice " << *verticeAtualPersonagem << " atual" << std::endl;
                             // Adicione aqui qualquer ação que deseja executar ao clicar no vértice
 
                             int destino = i;
@@ -113,7 +111,6 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
 
                             char endereco[50];
                             sprintf(endereco, "mapastxt/mapa%d.txt", i+1);
-                            std::cout<<"foi para o mapa "<<i+1<<std::endl;
                             level=i+1;
                             FILE *arquivo = fopen(endereco, "rt");
                             fread(mapa.mapa, sizeof(char), 12*13, arquivo);

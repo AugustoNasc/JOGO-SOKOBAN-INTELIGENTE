@@ -402,7 +402,7 @@ namespace tl{
                     
                     if (event.type == sf::Event::MouseButtonPressed) {
                         if (event.mouseButton.button == sf::Mouse::Left) {
-                        sf::Time elapsed = clock.getElapsedTime();
+                            sf::Time elapsed = clock.getElapsedTime();
                             posicaoMouse = sf::Mouse::getPosition(window);
                             scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
                             mouse.setPosition(scaledMousePosition);

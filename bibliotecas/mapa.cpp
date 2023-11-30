@@ -54,6 +54,12 @@ void mapa_declarar_imagens_usadas(Quadrado **imagens) {
     (*imagens)[3].imagem.loadFromFile("assets/mapa/adicionado mapa/Layer 2_sprite_6.png"); //pd
     (*imagens)[4].imagem.loadFromFile("assets/mapa/adicionado mapa/Layer 2_sprite_2.png"); //ps
     (*imagens)[5].imagem.loadFromFile("assets/mapa/adicionado mapa/Layer 2_sprite_4.png"); //pw
+
+
+    (*imagens)[6].imagem.loadFromFile("assets/mapa/adicionado mapa/crate_03.png"); //box
+    (*imagens)[7].imagem.loadFromFile("assets/mapa/adicionado mapa/crate_04.png"); //box
+    (*imagens)[8].imagem.loadFromFile("assets/mapa/adicionado mapa/crate_05.png"); //box
+    (*imagens)[9].imagem.loadFromFile("assets/mapa/adicionado mapa/crate_06.png"); //box
 }
 
 void mapa_declarar_background_fundo(Quadrado **fundo) {
@@ -91,10 +97,18 @@ void mapa_desenhando(direcaoPersonagem &sentido, MAPA mapa, Quadrado *imagens, Q
             }
 
             if(mapa.mapa[j][k]=='B') { //box
-                (imagens[0]).coordenada = sf::Vector2f(k*(DIMENSAO)+3, j*(DIMENSAO)+3);
-                sprite.setTexture((imagens[0]).imagem);
+
+                Quadrado desenho = imagens[0];
+
+                if(level>=4) desenho = imagens[6];
+                if(level>=7) desenho = imagens[7];
+                if(level>=9) desenho = imagens[8];
+                if(level>=12) desenho = imagens[9];
+
+                (desenho).coordenada = sf::Vector2f(k*(DIMENSAO)+3, j*(DIMENSAO)+3);
+                sprite.setTexture((desenho).imagem);
                 sprite.setTextureRect(sf::IntRect(0, 0, DIMENSAO-7, DIMENSAO-7));
-                sprite.setPosition((imagens[0]).coordenada.x, (imagens[0]).coordenada.y);
+                sprite.setPosition((desenho).coordenada.x, (desenho).coordenada.y);
                 window.draw(sprite);
             }
         }
