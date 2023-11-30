@@ -12,7 +12,6 @@ MAPA mapa;
 
 int main()
 {
-    FILE *arquivo;
     sf::RenderWindow window(sf::VideoMode(LARGURA, LARGURA), "Gasparzinho");
     window.setKeyRepeatEnabled(false); // Desativa a repetição de teclas
     GameScreen currentScreen = TITLE;
@@ -34,17 +33,14 @@ int main()
     backgroundSprite.setTexture(backgroundTexture);
 
     char endereco[50];
-    sprintf(endereco, "mapastxt/mapa%d.txt", level);
-    arquivo = fopen(endereco, "rt");
-    fread(mapa.mapa, sizeof(char), 12*13, arquivo);
-    declarar_posicoes_de_encaixe(&mapa);
-    mv::atualiza_posicao_jogador(gX, gY, mapa);
 
     mapa_declarar_imagens_usadas(&imagens);
-    mapa_background_fundo(&fundo);
+    mapa_declarar_background_fundo(&fundo);
+
+    mapa=novo_mapa(level, gX, gY, endereco);
 
     bool mapas_acessados[13];
-    atualiza_mapas_acessados(mapas_acessados);
+    atualiza_niveis_acessados(mapas_acessados);
 
     int voltando=0;
     int verticeAtualPersonagem=0;
@@ -72,19 +68,18 @@ int main()
                 {
                     // Apaga arquivo
                     FILE *file = fopen("jogadas/niveis_salvos.txt", "w");
-                    std::cout<<"apagado"<<std::endl;
                     if (file != NULL) {
                         fclose(file);
                     }
-                    atualiza_mapas_acessados(mapas_acessados);
+                    atualiza_niveis_acessados(mapas_acessados);
                     while(window.isOpen())
-                        carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, arquivo, sentido, imagens, fundo, verticeAtualPersonagem);
+                        carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem);
                 }
                 else if (continueEvent.key.code == sf::Keyboard::S)
                 {
                     verticeAtualPersonagem=ultimo_nivel_desbloqueado()-1;
                     while(window.isOpen())
-                        carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, arquivo, sentido, imagens, fundo, verticeAtualPersonagem);
+                        carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem);
                 }
                 break;
             }
@@ -95,7 +90,7 @@ int main()
     }
     else{
         while(window.isOpen())
-            carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, arquivo, sentido, imagens, fundo, verticeAtualPersonagem);
+            carrega_jogo(window, currentScreen, clock, level, gX, gY, mapas_acessados, mapa, &voltando, endereco, sentido, imagens, fundo, verticeAtualPersonagem);
     }
 
 
