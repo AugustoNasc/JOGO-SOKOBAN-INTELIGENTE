@@ -55,7 +55,7 @@ bool ha_jogo_salvo(){
     return false;
 }
 
-void atualiza_mapas_acessados(bool mapas[]){
+void atualiza_niveis_acessados(bool mapas[]){
     int level;
     FILE *arq = fopen("jogadas/niveis_salvos.txt", "rt");
 

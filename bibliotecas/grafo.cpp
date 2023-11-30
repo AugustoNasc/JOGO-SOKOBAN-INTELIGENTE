@@ -83,12 +83,12 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
         sf::Sprite character(characterTexture);
         character.setScale(1, 1);  // Ajuste conforme necessário
 
-        // Desenhe o personagem no vértice 0
+        // Desenhe o personagem no vértice atual
         sf::Vector2f characterPosition = g.verticesInfo[*verticeAtualPersonagem].position;
         character.setPosition(characterPosition - sf::Vector2f(25, 25));  // Ajuste conforme necessário
         window.draw(character);
-        mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition, verticeAtualPersonagem, ultimo_nivel_desbloqueado()-1);
-        *verticeAtualPersonagem=ultimo_nivel_desbloqueado()-1;
+        /*mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition, verticeAtualPersonagem, ultimo_nivel_desbloqueado()-1);
+        *verticeAtualPersonagem=ultimo_nivel_desbloqueado()-1;*/
 
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -105,6 +105,7 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
 
                         if (distance <= 50) {  // Raio do círculo (raio dos vértices)
                             std::cout << "Vértice " << i << " clicado!" << std::endl;
+                            std::cout << "Vértice " << *verticeAtualPersonagem << " atual" << std::endl;
                             // Adicione aqui qualquer ação que deseja executar ao clicar no vértice
 
                             int destino = i;
@@ -112,7 +113,7 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
 
                             char endereco[50];
                             sprintf(endereco, "mapastxt/mapa%d.txt", i+1);
-                            std::cout<<"foi para o mapa"<<i+1<<std::endl;
+                            std::cout<<"foi para o mapa "<<i+1<<std::endl;
                             level=i+1;
                             FILE *arquivo = fopen(endereco, "rt");
                             fread(mapa.mapa, sizeof(char), 12*13, arquivo);
@@ -188,15 +189,17 @@ void colocar_peso_aresta(Graph& g, int i, int j){
     float distance = std::sqrt(std::pow(g.verticesInfo[i].position.x - g.verticesInfo[j].position.x, 2) +\
                                            std::pow(g.verticesInfo[i].position.y - g.verticesInfo[j].position.y, 2));
     g.adjacencyMatrix[i][j] = static_cast<int>(distance);
+
+    g.adjacencyMatrix[j][i] = static_cast<int>(distance);
 }
 
-std::vector<int> dijkstra(const Graph& g, int nohAtual) {
+/* std::vector<int> dijkstra(const Graph& g, int verticeInicial) {
 
     std::vector<int> dist(g.vertices, std::numeric_limits<int>::max());
-    dist[nohAtual] = 0;
+    dist[verticeInicial] = 0;
 
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
-    pq.push({0, nohAtual});
+    pq.push({0, verticeInicial});
 
     while (!pq.empty()) {
         int u = pq.top().second;
@@ -215,19 +218,24 @@ std::vector<int> dijkstra(const Graph& g, int nohAtual) {
     }
 
     return dist;
-}
+} */
 
-std::vector<int> menorCaminho(const Graph& g, int nohAtual, int destino) { //Djkistra
+std::vector<int> menorCaminho(const Graph& g, int verticeInicial, int destino) {
     std::vector<int> dist(g.vertices, std::numeric_limits<int>::max());
     std::vector<int> prev(g.vertices, -1);
-    dist[nohAtual] = 0;
+    std::vector<bool> visitado(g.vertices, false);
+
+    dist[verticeInicial] = 0;
 
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
-    pq.push({0, nohAtual});
+    pq.push({0, verticeInicial});
 
     while (!pq.empty()) {
         int u = pq.top().second;
         pq.pop();
+
+        if (visitado[u]) continue;
+        visitado[u] = true;
 
         for (int v = 0; v < g.vertices; ++v) {
             if (g.adjacencyMatrix[u][v] > 0) {

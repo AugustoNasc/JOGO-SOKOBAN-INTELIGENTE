@@ -204,77 +204,82 @@ namespace mv{
     }
 
 void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& character,
-                            std::vector<sf::CircleShape>& vertices, std::vector<sf::Text>& labels,
-                            std::vector<sf::VertexArray>& edges, sf::Vector2f& characterPosition, int *verticeAtualPersonagem, int destino) {
+                         std::vector<sf::CircleShape>& vertices, std::vector<sf::Text>& labels,
+                         std::vector<sf::VertexArray>& edges, sf::Vector2f& characterPosition,
+                         int *verticeAtualPersonagem, int destino) {
 
-        std::vector<int> caminho = menorCaminho(g, *verticeAtualPersonagem, destino);
-        float speed = 200.0f;
+                        std::vector<int> caminho = menorCaminho(g, *verticeAtualPersonagem, destino);
 
-        for (std::size_t i = 1; i < caminho.size(); ++i) {
-            int currentVertex = caminho[i - 1];
-            int nextVertex = caminho[i];
+                        for(auto u: caminho){
+                            std::cout<<u<<" ,, ";
+                        }
+                        std::cout<<std::endl;
 
-            // Verifica se o próximo vértice é o destino
-            if (currentVertex == destino) {
-                sf::sleep(sf::milliseconds(1000));
-                std::cout << "Chegou ao destino!" << std::endl;
-                return;
-            }
+                        float speed = 200.0f;
+                        sf::Texture backgroundTexture;
+                                if (!backgroundTexture.loadFromFile("assets/fundo.png")){
+                                //erro...
+                                }
 
-            sf::Vector2f currentPos = g.verticesInfo[currentVertex].position;
-            sf::Vector2f nextPos = g.verticesInfo[nextVertex].position;
+                                sf::Sprite background(backgroundTexture);
 
-            // Atualiza a posição do personagem em direção ao próximo vértice
-            sf::Vector2f direction = nextPos - currentPos;
-            float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-            direction /= distance;  // Normalização do vetor
+                        for (std::size_t i = 1; i < caminho.size(); ++i) {
+                            int currentVertex = caminho[i - 1];
+                            int nextVertex = caminho[i];
 
-            sf::Clock timer;
-            float elapsedSeconds = 0.0f;
+                            sf::Vector2f currentPos = g.verticesInfo[currentVertex].position;
+                            sf::Vector2f nextPos = g.verticesInfo[nextVertex].position;
 
-            sf::Texture backgroundTexture;
-            if (!backgroundTexture.loadFromFile("assets/fundo.png")){
-            //erro...
-            }
+                            sf::Vector2f direction = nextPos - currentPos;
+                            float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+                            direction /= distance;  // Normalização do vetor
 
-            sf::Sprite background(backgroundTexture);
+                            sf::Clock timer;
+                            float elapsedSeconds = 0.0f;
 
-            while (elapsedSeconds < distance / speed) {
-                float deltaTime = timer.restart().asSeconds();
-                elapsedSeconds += deltaTime;
+                            while (elapsedSeconds < distance / speed) {
+                                float deltaTime = timer.restart().asSeconds();
+                                elapsedSeconds += deltaTime;
 
-                characterPosition += direction * speed * deltaTime;
+                                characterPosition += direction * speed * deltaTime;
 
-                window.clear();
-                window.draw(background);
+                                window.clear();
+                            window.draw(background);
 
-                // Desenhe as arestas
-                for (const auto& edge : edges) {
-                    window.draw(edge);
-                }
+                            // Desenhe as arestas
+                            for (const auto& edge : edges) {
+                                window.draw(edge);
+                            }
 
-                // Desenhe os vértices e rótulos
-                for (int i = 0; i < g.vertices; ++i) {
-                    window.draw(vertices[i]);
-                    window.draw(labels[i]);
-                }
+                            // Desenhe os vértices e rótulos
+                            for (int i = 0; i < g.vertices; ++i) {
+                                window.draw(vertices[i]);
+                                window.draw(labels[i]);
+                            }
 
-                character.setPosition(characterPosition-sf::Vector2f(25, 25));
-                window.draw(character);
-                window.display();
+                                character.setPosition(characterPosition - sf::Vector2f(25, 25));
+                                window.draw(character);
+                                window.display();
 
-                sf::sleep(sf::milliseconds(20));
+                                sf::sleep(sf::milliseconds(20));
 
-                sf::Event event;
-                while (window.pollEvent(event)) {
-                    if (event.type == sf::Event::Closed) {
-                        window.close();
-                        return;
-                    }
-                }
-            }
-        }
-    }
+                                sf::Event event;
+                                while (window.pollEvent(event)) {
+                                    if (event.type == sf::Event::Closed) {
+                                        window.close();
+                                        return;
+                                    }
+                                }
+                            }
+
+                            // Atualize a posição do personagem para o próximo vértice ao final do loop
+                            characterPosition = nextPos;
+                        }
+
+                        // Imprime a mensagem ao chegar ao destino
+                        std::cout << "Chegou ao destino!" << std::endl;
+}
+
 
 
 }

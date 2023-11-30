@@ -2,6 +2,7 @@
 #include <string>
 #include "mapa.hpp"
 #include "voltajogada.hpp"
+#include "movimentos.hpp"
 
 #define QTD_QUADRADOS 12
 #define LARGURA 600
@@ -55,7 +56,7 @@ void mapa_declarar_imagens_usadas(Quadrado **imagens) {
     (*imagens)[5].imagem.loadFromFile("assets/mapa/adicionado mapa/Layer 2_sprite_4.png"); //pw
 }
 
-void mapa_background_fundo(Quadrado **fundo) {
+void mapa_declarar_background_fundo(Quadrado **fundo) {
     char endereco[50];
 
     for(int level=1; level<=13; level++) {
@@ -111,4 +112,15 @@ MAPA mapa_rezetar(int level) {
     declarar_posicoes_de_encaixe(&mapa_rezetado);
     fclose(arquivo);
     return mapa_rezetado;
+}
+
+MAPA novo_mapa(int level, int &gX, int &gY, char endereco[]){
+    FILE *arquivo;
+    MAPA mapa;
+        sprintf(endereco, "mapastxt/mapa%d.txt", level);
+        arquivo = fopen(endereco, "rt");
+        fread(mapa.mapa, sizeof(char), 12*13, arquivo);
+        declarar_posicoes_de_encaixe(&mapa);
+        mv::atualiza_posicao_jogador(gX, gY, mapa);
+    return mapa;
 }

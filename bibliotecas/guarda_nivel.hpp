@@ -8,6 +8,6 @@ int ultimo_nivel_desbloqueado(void);
 bool verifica_nivel_desbloqueado(int level);
 bool ha_jogo_salvo();
 
-void atualiza_mapas_acessados(bool []);
+void atualiza_niveis_acessados(bool []);
 
 #endif
