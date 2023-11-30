@@ -205,9 +205,9 @@ namespace mv{
 
 void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& character,
                             std::vector<sf::CircleShape>& vertices, std::vector<sf::Text>& labels,
-                            std::vector<sf::VertexArray>& edges, sf::Vector2f& characterPosition, int source, int destino) {
+                            std::vector<sf::VertexArray>& edges, sf::Vector2f& characterPosition, int *verticeAtualPersonagem, int destino) {
 
-        std::vector<int> caminho = menorCaminho(g, source, destino);
+        std::vector<int> caminho = menorCaminho(g, *verticeAtualPersonagem, destino);
         float speed = 200.0f;
 
         for (std::size_t i = 1; i < caminho.size(); ++i) {

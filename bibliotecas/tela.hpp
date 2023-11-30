@@ -4,6 +4,7 @@
 typedef enum GameScreen { TITLE, MANUAL1, MANUAL2, ESCOLHER_NIVEL, CREDITO, GAMEPLAY, PARABENS } GameScreen;
 
 namespace tl{
+    void jogo_salvo(sf::RenderWindow &);
     void tela_titulo(sf::RenderWindow&);
     void titulo(sf::RenderWindow&, GameScreen&, sf::Clock &);
 

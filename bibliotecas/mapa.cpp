@@ -66,7 +66,7 @@ void mapa_background_fundo(Quadrado **fundo) {
 
 void mapa_desenhando(direcaoPersonagem &sentido, MAPA mapa, Quadrado *imagens, Quadrado *fundo, int level, sf::RenderWindow &window) {
     sf::Sprite sprite;
-
+    
     (fundo[level-1]).coordenada = sf::Vector2f(0, 0);
     sprite.setTexture((fundo[level-1]).imagem);
     sprite.setTextureRect(sf::IntRect(0, 0, LARGURA, LARGURA));

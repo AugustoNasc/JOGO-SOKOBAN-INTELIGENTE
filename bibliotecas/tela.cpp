@@ -2,8 +2,46 @@
 #include "mapa.hpp"
 #include "tela.hpp"
 #include <iostream>
+#include "guarda_nivel.hpp"
 
 namespace tl{
+    void jogo_salvo(sf::RenderWindow &window){
+        
+            sf::Font font;\
+            if (!font.loadFromFile("assets/arial_narrow_7.ttf"))
+            {
+                //erro...
+            }
+            sf::Texture backgroundTexture;
+                    if (!backgroundTexture.loadFromFile("assets/fundo.png")){
+                        //erro...
+                    }
+
+                    sf::Sprite background(backgroundTexture);
+
+            window.draw(background);
+
+            sf::Text text("Ha um jogo salvo, \ndeseja continuar de \nonde parou?", font);
+            text.setPosition(210, 125);
+            window.draw(text);
+
+            /* Desenhar sim*/
+            text.setCharacterSize(45);
+            text.setFillColor(sf::Color::Green);
+            text.setString("[S] sim");
+            text.setPosition(220, 240);
+            window.draw(text);
+
+            /* Desenhar não*/
+            text.setCharacterSize(45);
+            text.setFillColor(sf::Color::Red);
+            text.setString("[N] nao");
+            text.setPosition(220, 300);
+            window.draw(text);
+
+            window.display();
+    }
+    
     void tela_titulo(sf::RenderWindow &window){
         sf::Font font;\
         if (!font.loadFromFile("assets/arial_narrow_7.ttf"))
@@ -105,7 +143,7 @@ namespace tl{
                         scaledMousePosition = sf::Vector2f(posicaoMouse.x / p, posicaoMouse.y / p);
                         mouse.setPosition(scaledMousePosition);
                         for (int i = 0; i < 4; i++) {
-                            if(mouse.getGlobalBounds().intersects(botaoNivel[i].getGlobalBounds()) && elapsed.asSeconds() >= 1.0f){
+                            if(mouse.getGlobalBounds().intersects(botaoNivel[i].getGlobalBounds()) && elapsed.asSeconds() >= 0.01f){
                                     clock.restart();
                                     if(i==0)
                                         currentScreen = GAMEPLAY;
@@ -258,7 +296,7 @@ namespace tl{
                             mouse.setPosition(scaledMousePosition);
                             if (mouse.getGlobalBounds().intersects(PrimeiroBotao.getGlobalBounds())) {
                                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                                    if(elapsed.asSeconds() >= 0.5f){
+                                    if(elapsed.asSeconds() >= 0.01f){
                                         currentScreen = TITLE;
                                         clock.restart();
                                     }
@@ -267,7 +305,7 @@ namespace tl{
                             else if(i==2){
                                 if (mouse.getGlobalBounds().intersects(SegundoBotao.getGlobalBounds())) {
                                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                                    if(elapsed.asSeconds() >= 0.5f){
+                                    if(elapsed.asSeconds() >= 0.01f){
                                         currentScreen = GAMEPLAY;
                                         clock.restart();
                                     }
@@ -370,7 +408,7 @@ namespace tl{
                             mouse.setPosition(scaledMousePosition);
                             if (mouse.getGlobalBounds().intersects(botaoNivel.getGlobalBounds())) {
                                 sf::Time elapsed = clock.getElapsedTime();
-                                if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && currentScreen == CREDITO && elapsed.asSeconds() >= 1.0f) {
+                                if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && currentScreen == CREDITO && elapsed.asSeconds() >= 0.01f) {
                                         currentScreen = TITLE;
                                         clock.restart();
                                 }

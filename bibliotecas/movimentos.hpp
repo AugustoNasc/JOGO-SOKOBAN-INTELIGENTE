@@ -14,7 +14,7 @@ namespace mv{
     void comando_por_tecla(sf::Event, direcaoPersonagem &, int &, int &, int &, MAPA &, int&, sf::Clock &);
     void anda_pelos_vertices(sf::RenderWindow& window, const Graph& g, sf::Sprite& character,
                             std::vector<sf::CircleShape>& vertices, std::vector<sf::Text>& labels,
-                            std::vector<sf::VertexArray>& edges, sf::Vector2f& characterPosition, int source, int destino);
+                            std::vector<sf::VertexArray>& edges, sf::Vector2f& characterPosition, int *, int destino);
 }
 
 #endif

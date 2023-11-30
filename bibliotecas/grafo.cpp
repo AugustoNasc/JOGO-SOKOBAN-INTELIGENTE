@@ -4,12 +4,15 @@
 #include <cmath>
 #include <iostream>
 #include "movimentos.hpp"
+#include "guarda_nivel.hpp"
 
-void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA &mapa, GameScreen &currentScreen, int &gX, int &gY, int &level, bool mapa_acessado[]) {
+void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA &mapa, GameScreen &currentScreen,
+                                 int &gX, int &gY, int &level, bool mapa_acessado[], int *verticeAtualPersonagem) {
 
     std::vector<sf::CircleShape> vertices(g.vertices);
     std::vector<sf::Text> labels(g.vertices);
     std::vector<sf::VertexArray> edges;
+
 
     sf::Font font;
     if (!font.loadFromFile("assets/arial_narrow_7.ttf")) {
@@ -81,10 +84,11 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
         character.setScale(1, 1);  // Ajuste conforme necessário
 
         // Desenhe o personagem no vértice 0
-        sf::Vector2f characterPosition = g.verticesInfo[0].position;
+        sf::Vector2f characterPosition = g.verticesInfo[*verticeAtualPersonagem].position;
         character.setPosition(characterPosition - sf::Vector2f(25, 25));  // Ajuste conforme necessário
         window.draw(character);
-
+        mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition, verticeAtualPersonagem, ultimo_nivel_desbloqueado()-1);
+        *verticeAtualPersonagem=ultimo_nivel_desbloqueado()-1;
 
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -104,7 +108,7 @@ void desenhaGrafo_e_direcionaMapa(const Graph& g, sf::RenderWindow &window, MAPA
                             // Adicione aqui qualquer ação que deseja executar ao clicar no vértice
 
                             int destino = i;
-                            mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition, 0, destino);
+                            mv::anda_pelos_vertices(window, g, character, vertices, labels, edges, characterPosition, verticeAtualPersonagem, destino);
 
                             char endereco[50];
                             sprintf(endereco, "mapastxt/mapa%d.txt", i+1);
