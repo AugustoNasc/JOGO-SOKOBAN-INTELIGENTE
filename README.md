@@ -1,5 +1,5 @@
 # Sokoban
-Projeto da disciplina de CES-11 no qual consiste em criar um jogo em C++ utilizando a biblioteca SFML.
+Projeto da disciplina de CES-11 no qual consiste em criar um jogo em C++ utilizando a biblioteca SFML. Alguns critérios da disciplina consistiam em incluir possibilidade de salvar o jogo para continuar posteriormente, implementar um sistema de inicialização quando não houver hogos salvos, movimentação no mapa devia ser inteligente, ou seja, dado o ponto de destino, o personagem se movimenta da maneira mais inteligente no tabuleiro, considerando todas as restrições de movimento, onde foi aplicado o algoritmo de Dijkstra.
 
 Antes de começar, certifique-se de ter instalado a biblioteca externa utilizada:
 
